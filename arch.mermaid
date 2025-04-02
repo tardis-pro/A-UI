@@ -1,0 +1,77 @@
+flowchart TD
+    subgraph "Frontend Layer"
+        UI[User Interface]
+        IDE[IDE Integration]
+        CLI[Command Line Interface]
+    end
+
+    subgraph "API Layer"
+        API[REST/GraphQL API]
+        WSG[WebSocket Gateway]
+        AUTH[Authentication & Authorization]
+    end
+
+    subgraph "Service Layer"
+        QP[Query Processor]
+        KM[Knowledge Manager]
+        CS[Chunking Service]
+        ES[Embedding Service]
+        IS[Indexing Service]
+        KES[Knowledge Extraction Service]
+        RS[Retrieval Service]
+    end
+
+    subgraph "Processing Layer"
+        AST[AST Parser]
+        NLP[NLP Engine]
+        ML[ML Models]
+        VG[Vector Generator]
+    end
+
+    subgraph "Storage Layer"
+        VS[Vector Store]
+        GDB[Graph Database]
+        TS[Text Store]
+        META[Metadata Store]
+        CACHE[Distributed Cache]
+    end
+
+    UI --> API
+    IDE --> API
+    CLI --> API
+    
+    API --> QP
+    API --> AUTH
+    WSG --> QP
+    
+    QP --> KM
+    QP --> RS
+    
+    KM --> CS
+    KM --> ES
+    KM --> IS
+    KM --> KES
+    
+    CS --> AST
+    CS --> TS
+    
+    ES --> VG
+    ES --> ML
+    
+    KES --> NLP
+    KES --> ML
+    
+    RS --> VS
+    RS --> GDB
+    
+    AST --> TS
+    VG --> VS
+    
+    NLP --> META
+    IS --> VS
+    IS --> GDB
+    IS --> META
+    
+    VS --> CACHE
+    GDB --> CACHE
+    META --> CACHE
