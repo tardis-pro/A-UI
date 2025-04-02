@@ -1,0 +1,141 @@
+flowchart TD
+    subgraph "Input Sources"
+        GIT[Git Repository]
+        FS[File System]
+        API[API Uploads]
+    end
+    
+    subgraph "Chunking Engine"
+        AST[AST Parser]
+        SBD[Semantic Boundary Detection]
+        MLS[Multi-Language Support]
+        SR[Symbol Resolution]
+        LAT[Language-Aware Tokenization]
+        
+        subgraph "Granularity Hierarchy"
+            L1[L1: Project Structure]
+            L2[L2: Package/Module]
+            L3[L3: File]
+            L4[L4: Class/Component]
+            L5[L5: Function/Method]
+            L6[L6: Block]
+            L7[L7: Statement]
+            
+            L1 --> L2
+            L2 --> L3
+            L3 --> L4
+            L4 --> L5
+            L5 --> L6
+            L6 --> L7
+        end
+        
+        subgraph "Chunking Strategies"
+            OW[Overlapping Windows]
+            CAB[Context-Aware Boundaries]
+            SWVS[Sliding Windows w/ Variable Stride]
+            SHD[Special Handling for Documentation]
+            RC[Recursive Chunking]
+        end
+    end
+    
+    subgraph "Metadata Enrichment"
+        FPH[Full Path Hierarchy]
+        SA[Signature Analysis]
+        IG[Import Graph]
+        VHI[Version History Integration]
+        AB[API Boundaries]
+        RBA[Runtime Behavior Annotations]
+        
+        subgraph "Semantic Annotations"
+            IC[Intent Classification]
+            CMS[Complexity Metrics Suite]
+            CQI[Code Quality Indicators]
+            TCL[Test Coverage Linkage]
+            SC[Security Classification]
+            DFA[Data Flow Analysis]
+        end
+        
+        subgraph "Documentation Correlation"
+            AC[Associated Comments]
+            ARC[Architectural Context]
+            EB[Expected Behavior]
+            UE[Usage Examples]
+            IL[Issue Linkage]
+        end
+    end
+    
+    subgraph "Embedding Pipeline"
+        subgraph "Model Ensemble"
+            PCE[Primary Code Embedding]
+            NLE[Natural Language Embeddings]
+            HE[Hybrid Embeddings]
+            CLM[Cross-Language Mapper]
+            DW[Dynamic Weighting]
+        end
+        
+        subgraph "Embedding Techniques"
+            CL[Contrastive Learning]
+            SE[Structural Embeddings]
+            FE[Functional Embeddings]
+            SSP[Self-Supervised Pre-training]
+            HEnc[Hierarchical Encoding]
+        end
+        
+        subgraph "Performance Optimization"
+            MPQ[Mixed-Precision Quantization]
+            HSA[Hardware-Specific Acceleration]
+            EBP[Efficient Bulk Processing]
+            IDU[Incremental Differential Updates]
+            PC[Pruning and Compression]
+        end
+    end
+    
+    subgraph "Storage Layer"
+        VS[Vector Store]
+        MS[Metadata Store]
+        CS[Chunk Store]
+        ES[Embedding Store]
+    end
+    
+    GIT --> AST
+    FS --> AST
+    API --> AST
+    
+    AST --> SBD
+    AST --> MLS
+    AST --> SR
+    AST --> LAT
+    
+    SBD --> Granularity Hierarchy
+    MLS --> Granularity Hierarchy
+    SR --> Granularity Hierarchy
+    LAT --> Granularity Hierarchy
+    
+    Granularity Hierarchy --> Chunking Strategies
+    
+    Chunking Strategies --> FPH
+    Chunking Strategies --> SA
+    Chunking Strategies --> IG
+    Chunking Strategies --> VHI
+    Chunking Strategies --> AB
+    Chunking Strategies --> RBA
+    
+    FPH --> Semantic Annotations
+    SA --> Semantic Annotations
+    IG --> Semantic Annotations
+    VHI --> Semantic Annotations
+    AB --> Semantic Annotations
+    RBA --> Semantic Annotations
+    
+    Semantic Annotations --> Documentation Correlation
+    
+    Documentation Correlation --> Model Ensemble
+    
+    Model Ensemble --> Embedding Techniques
+    
+    Embedding Techniques --> Performance Optimization
+    
+    Performance Optimization --> VS
+    Performance Optimization --> MS
+    Performance Optimization --> CS
+    Performance Optimization --> ES
