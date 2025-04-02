@@ -1,102 +1,83 @@
-flowchart TD
-    subgraph "Input Sources"
-        GIT[Git Repository]
-        FS[File System]
-        API[API Uploads]
-    end
+graph TD
+    %% Input Sources
+    GIT["Git Repository"]
+    FS["File System"]
+    API["API Uploads"]
     
-    subgraph "Chunking Engine"
-        AST[AST Parser]
-        SBD[Semantic Boundary Detection]
-        MLS[Multi-Language Support]
-        SR[Symbol Resolution]
-        LAT[Language-Aware Tokenization]
-        
-        subgraph "Granularity Hierarchy"
-            L1[L1: Project Structure]
-            L2[L2: Package/Module]
-            L3[L3: File]
-            L4[L4: Class/Component]
-            L5[L5: Function/Method]
-            L6[L6: Block]
-            L7[L7: Statement]
-            
-            L1 --> L2
-            L2 --> L3
-            L3 --> L4
-            L4 --> L5
-            L5 --> L6
-            L6 --> L7
-        end
-        
-        subgraph "Chunking Strategies"
-            OW[Overlapping Windows]
-            CAB[Context-Aware Boundaries]
-            SWVS[Sliding Windows w/ Variable Stride]
-            SHD[Special Handling for Documentation]
-            RC[Recursive Chunking]
-        end
-    end
+    %% Chunking Engine Primary Nodes
+    AST["AST Parser"]
+    SBD["Semantic Boundary Detection"]
+    MLS["Multi-Language Support"]
+    SR["Symbol Resolution"]
+    LAT["Language-Aware Tokenization"]
     
-    subgraph "Metadata Enrichment"
-        FPH[Full Path Hierarchy]
-        SA[Signature Analysis]
-        IG[Import Graph]
-        VHI[Version History Integration]
-        AB[API Boundaries]
-        RBA[Runtime Behavior Annotations]
-        
-        subgraph "Semantic Annotations"
-            IC[Intent Classification]
-            CMS[Complexity Metrics Suite]
-            CQI[Code Quality Indicators]
-            TCL[Test Coverage Linkage]
-            SC[Security Classification]
-            DFA[Data Flow Analysis]
-        end
-        
-        subgraph "Documentation Correlation"
-            AC[Associated Comments]
-            ARC[Architectural Context]
-            EB[Expected Behavior]
-            UE[Usage Examples]
-            IL[Issue Linkage]
-        end
-    end
+    %% Granularity Hierarchy
+    L1["L1: Project Structure"]
+    L2["L2: Package/Module"]
+    L3["L3: File"]
+    L4["L4: Class/Component"]
+    L5["L5: Function/Method"]
+    L6["L6: Block"]
+    L7["L7: Statement"]
     
-    subgraph "Embedding Pipeline"
-        subgraph "Model Ensemble"
-            PCE[Primary Code Embedding]
-            NLE[Natural Language Embeddings]
-            HE[Hybrid Embeddings]
-            CLM[Cross-Language Mapper]
-            DW[Dynamic Weighting]
-        end
-        
-        subgraph "Embedding Techniques"
-            CL[Contrastive Learning]
-            SE[Structural Embeddings]
-            FE[Functional Embeddings]
-            SSP[Self-Supervised Pre-training]
-            HEnc[Hierarchical Encoding]
-        end
-        
-        subgraph "Performance Optimization"
-            MPQ[Mixed-Precision Quantization]
-            HSA[Hardware-Specific Acceleration]
-            EBP[Efficient Bulk Processing]
-            IDU[Incremental Differential Updates]
-            PC[Pruning and Compression]
-        end
-    end
+    %% Chunking Strategies
+    OW["Overlapping Windows"]
+    CAB["Context-Aware Boundaries"]
+    SWVS["Sliding Windows w/ Variable Stride"]
+    SHD["Special Handling for Documentation"]
+    RC["Recursive Chunking"]
     
-    subgraph "Storage Layer"
-        VS[Vector Store]
-        MS[Metadata Store]
-        CS[Chunk Store]
-        ES[Embedding Store]
-    end
+    %% Metadata Enrichment
+    FPH["Full Path Hierarchy"]
+    SA["Signature Analysis"]
+    IG["Import Graph"]
+    VHI["Version History Integration"]
+    AB["API Boundaries"]
+    RBA["Runtime Behavior Annotations"]
     
+    %% Semantic Annotations
+    IC["Intent Classification"]
+    CMS["Complexity Metrics Suite"]
+    CQI["Code Quality Indicators"]
+    TCL["Test Coverage Linkage"]
+    SC["Security Classification"]
+    DFA["Data Flow Analysis"]
+    
+    %% Documentation Correlation
+    AC["Associated Comments"]
+    ARC["Architectural Context"]
+    EB["Expected Behavior"]
+    UE["Usage Examples"]
+    IL["Issue Linkage"]
+    
+    %% Model Ensemble
+    PCE["Primary Code Embedding"]
+    NLE["Natural Language Embeddings"]
+    HE["Hybrid Embeddings"]
+    CLM["Cross-Language Mapper"]
+    DW["Dynamic Weighting"]
+    
+    %% Embedding Techniques
+    CL["Contrastive Learning"]
+    SE["Structural Embeddings"]
+    FE["Functional Embeddings"]
+    SSP["Self-Supervised Pre-training"]
+    HEncoding["Hierarchical Encoding"]
+    
+    %% Performance Optimization
+    MPQ["Mixed-Precision Quantization"]
+    HSA["Hardware-Specific Acceleration"]
+    EBP["Efficient Bulk Processing"]
+    IDU["Incremental Differential Updates"]
+    PC["Pruning and Compression"]
+    
+    %% Storage Layer
+    VS["Vector Store"]
+    MS["Metadata Store"]
+    CS["Chunk Store"]
+    ES["Embedding Store"]
+    
+    %% Connections
     GIT --> AST
     FS --> AST
     API --> AST
@@ -106,36 +87,63 @@ flowchart TD
     AST --> SR
     AST --> LAT
     
-    SBD --> Granularity Hierarchy
-    MLS --> Granularity Hierarchy
-    SR --> Granularity Hierarchy
-    LAT --> Granularity Hierarchy
+    SBD --> L1
+    MLS --> L1
+    SR --> L1
+    LAT --> L1
     
-    Granularity Hierarchy --> Chunking Strategies
+    L1 --> L2
+    L2 --> L3
+    L3 --> L4
+    L4 --> L5
+    L5 --> L6
+    L6 --> L7
     
-    Chunking Strategies --> FPH
-    Chunking Strategies --> SA
-    Chunking Strategies --> IG
-    Chunking Strategies --> VHI
-    Chunking Strategies --> AB
-    Chunking Strategies --> RBA
+    L7 --> OW
+    L7 --> CAB
+    L7 --> SWVS
+    L7 --> SHD
+    L7 --> RC
     
-    FPH --> Semantic Annotations
-    SA --> Semantic Annotations
-    IG --> Semantic Annotations
-    VHI --> Semantic Annotations
-    AB --> Semantic Annotations
-    RBA --> Semantic Annotations
+    RC --> FPH
+    RC --> SA
+    RC --> IG
+    RC --> VHI
+    RC --> AB
+    RC --> RBA
     
-    Semantic Annotations --> Documentation Correlation
+    RBA --> IC
+    RBA --> CMS
+    RBA --> CQI
+    RBA --> TCL
+    RBA --> SC
+    RBA --> DFA
     
-    Documentation Correlation --> Model Ensemble
+    DFA --> AC
+    DFA --> ARC
+    DFA --> EB
+    DFA --> UE
+    DFA --> IL
     
-    Model Ensemble --> Embedding Techniques
+    IL --> PCE
+    IL --> NLE
+    IL --> HE
+    IL --> CLM
+    IL --> DW
     
-    Embedding Techniques --> Performance Optimization
+    DW --> CL
+    DW --> SE
+    DW --> FE
+    DW --> SSP
+    DW --> HEncoding
     
-    Performance Optimization --> VS
-    Performance Optimization --> MS
-    Performance Optimization --> CS
-    Performance Optimization --> ES
+    HEncoding --> MPQ
+    HEncoding --> HSA
+    HEncoding --> EBP
+    HEncoding --> IDU
+    HEncoding --> PC
+    
+    PC --> VS
+    PC --> MS
+    PC --> CS
+    PC --> ES
