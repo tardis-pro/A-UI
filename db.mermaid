@@ -1,0 +1,111 @@
+erDiagram
+    CodeEntity {
+        uuid id PK
+        string path
+        string name
+        string type "file|class|function|method|variable"
+        string language
+        text content
+        json metadata
+        uuid parent_id FK
+        timestamp created_at
+        timestamp updated_at
+        string version_hash
+    }
+    
+    CodeChunk {
+        uuid id PK
+        uuid entity_id FK
+        int granularity_level "L1-L7"
+        text content
+        json metadata
+        json embeddings
+        int token_count
+        int complexity
+        uuid parent_chunk_id FK
+        timestamp created_at
+    }
+    
+    DocumentationEntity {
+        uuid id PK
+        string type "comment|docstring|readme|wiki|diagram"
+        text content
+        uuid associated_code_id FK
+        json metadata
+        json embeddings
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    ProjectArtifact {
+        uuid id PK
+        string type "issue|ticket|epic|sprint|release"
+        string external_id
+        string title
+        text description
+        json metadata
+        json embeddings
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    CommunicationRecord {
+        uuid id PK
+        string type "pr_discussion|code_review|chat|meeting_note"
+        text content
+        json participants
+        json extracted_points
+        json embeddings
+        timestamp created_at
+    }
+    
+    Relationship {
+        uuid id PK
+        uuid source_id FK
+        uuid target_id FK
+        string relationship_type
+        float confidence_score
+        json metadata
+        timestamp created_at
+    }
+    
+    HyperEdge {
+        uuid id PK
+        string edge_type
+        json entity_ids "[uuid, uuid, ...]"
+        json metadata
+        float confidence_score
+        timestamp created_at
+    }
+    
+    KnowledgeAssertion {
+        uuid id PK
+        string assertion_type "explicit|tacit|procedural|contextual|meta|operational"
+        text content
+        json classification
+        float confidence_score
+        json entity_ids "[uuid, uuid, ...]"
+        json metadata
+        json embeddings
+        timestamp created_at
+        timestamp valid_until
+    }
+    
+    VectorIndex {
+        uuid id PK
+        string index_type
+        json vector_config
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    CodeEntity ||--o{ CodeChunk : "chunked_into"
+    CodeEntity ||--o{ DocumentationEntity : "documented_by"
+    CodeEntity ||--o{ Relationship : "participates_in"
+    DocumentationEntity ||--o{ Relationship : "participates_in"
+    ProjectArtifact ||--o{ Relationship : "participates_in"
+    CommunicationRecord ||--o{ Relationship : "participates_in"
+    CodeChunk ||--o{ CodeChunk : "contains"
+    CodeEntity ||--o{ CodeEntity : "contains"
+    KnowledgeAssertion ||--o{ Relationship : "derived_from"
+    Relationship }o--o{ HyperEdge : "participates_in"
