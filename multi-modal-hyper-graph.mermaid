@@ -1,0 +1,129 @@
+graph TD
+    %% Entity Types
+    CE["Code Entities"]
+    DO["Documentation Objects"]
+    PA["Project Artifacts"]
+    CR["Communication Records"]
+    EC["Execution Context"]
+    UIE["User Interactions"]
+    ExtRef["External References"]
+    SysArch["System Architecture"]
+    
+    %% Relationship Types
+    StructLinks["Structural Links"]
+    TempLinks["Temporal Links"]
+    SemLinks["Semantic Links"]
+    AuthLinks["Authorship Links"]
+    CausLinks["Causal Links"]
+    DomLinks["Domain Links"]
+    ConLinks["Concept Links"]
+    
+    %% Hypergraph Extensions
+    ContSub["Contextual Subgraphs"]
+    TempVer["Temporal Versioning"]
+    ConfScore["Confidence Scoring"]
+    MultiView["Multi-perspective Views"]
+    HyperEdge["Hyperedge Support"]
+    AdvVerif["Adversarial Verification"]
+    
+    %% Explicit Knowledge
+    ArchKnow["Architectural Knowledge"]
+    APIKnow["API Knowledge"]
+    DomKnow["Domain Knowledge"]
+    BusLogic["Business Logic Knowledge"]
+    ConfigKnow["Configuration Knowledge"]
+    
+    %% Tacit Knowledge
+    DesDecis["Design Decisions"]
+    BestPrac["Best Practices"]
+    WorkAround["Workarounds"]
+    CautNote["Cautionary Notes"]
+    HistCont["Historical Context"]
+    
+    %% Procedural Knowledge
+    BuildProc["Build Procedures"]
+    DeployStep["Deployment Steps"]
+    DebugFlow["Debugging Workflows"]
+    TestProto["Testing Protocols"]
+    
+    %% Contextual Knowledge
+    NameConv["Naming Conventions"]
+    ArchPatt["Architectural Patterns"]
+    TeamPrac["Team Practices"]
+    
+    %% Metaknowledge
+    ConfLevel["Confidence Levels"]
+    FreshData["Freshness"]
+    AuthData["Authority"]
+    AppCond["Applicability Conditions"]
+    
+    %% Operational Knowledge
+    PerfProf["Performance Profiles"]
+    ErrPatt["Error Patterns"]
+    MonGuide["Monitoring Guidelines"]
+    
+    %% Knowledge Extraction
+    NLPPipe["Multi-stage NLP Pipeline"]
+    IntClass["Intent Classification"]
+    EntRecog["Entity Recognition"]
+    RelExtr["Relationship Extraction"]
+    SentAnal["Sentiment Analysis"]
+    ContDet["Contradiction Detection"]
+    ArgMine["Argument Mining"]
+    
+    %% Storage Layer
+    GraphDB["Graph Database"]
+    VectorDB["Vector Database"]
+    TimeDB["Time Series Database"]
+    KnowStore["Knowledge Store"]
+    
+    %% Connect Entity Types to Relationship Types
+    CE --> StructLinks
+    DO --> StructLinks
+    PA --> TempLinks
+    CR --> AuthLinks
+    EC --> CausLinks
+    UIE --> SemLinks
+    ExtRef --> DomLinks
+    SysArch --> ConLinks
+    
+    %% Connect Relationship Types to Hypergraph Extensions
+    StructLinks --> ContSub
+    TempLinks --> TempVer
+    SemLinks --> ConfScore
+    AuthLinks --> MultiView
+    CausLinks --> HyperEdge
+    DomLinks --> AdvVerif
+    ConLinks --> ContSub
+    
+    %% Connect Hypergraph Extensions to Knowledge Types
+    ContSub --> ArchKnow
+    ContSub --> DesDecis
+    ContSub --> BuildProc
+    ContSub --> NameConv
+    TempVer --> ConfLevel
+    TempVer --> PerfProf
+    
+    %% Connect Entity Types to Knowledge Extraction
+    CE --> NLPPipe
+    DO --> NLPPipe
+    PA --> IntClass
+    CR --> EntRecog
+    SysArch --> RelExtr
+    
+    %% Connect Knowledge Extraction to Knowledge Classification
+    NLPPipe --> ArchKnow
+    IntClass --> DesDecis
+    EntRecog --> BuildProc
+    RelExtr --> NameConv
+    SentAnal --> ConfLevel
+    ContDet --> FreshData
+    ArgMine --> ErrPatt
+    
+    %% Connect to Storage Layer
+    ArchKnow --> GraphDB
+    DesDecis --> VectorDB
+    BuildProc --> TimeDB
+    NameConv --> KnowStore
+    ConfLevel --> GraphDB
+    PerfProf --> TimeDB
