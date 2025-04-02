@@ -1,0 +1,309 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#1E1E2E" />
+  
+  <!-- Sidebar -->
+  <rect x="0" y="0" width="220" height="800" fill="#181825" />
+  
+  <!-- Sidebar Logo Area -->
+  <rect x="0" y="0" width="220" height="60" fill="#313244" />
+  <text x="110" y="38" font-family="Arial" font-size="20" fill="#CDD6F4" text-anchor="middle" font-weight="bold">AUI</text>
+  
+  <!-- Sidebar Menu Items -->
+  <g>
+    <rect x="15" y="80" width="190" height="40" rx="5" fill="#181825" />
+    <text x="55" y="105" font-family="Arial" font-size="14" fill="#CDD6F4">Dashboard</text>
+    <rect x="20" y="90" width="20" height="20" fill="#CDD6F4" />
+  </g>
+  
+  <g>
+    <rect x="15" y="130" width="190" height="40" rx="5" fill="#181825" />
+    <text x="55" y="155" font-family="Arial" font-size="14" fill="#CDD6F4">Code Assistant</text>
+    <rect x="20" y="140" width="20" height="20" fill="#89B4FA" />
+  </g>
+  
+  <g>
+    <rect x="15" y="180" width="190" height="40" rx="5" fill="#181825" />
+    <text x="55" y="205" font-family="Arial" font-size="14" fill="#CDD6F4">Knowledge Base</text>
+    <rect x="20" y="190" width="20" height="20" fill="#F9E2AF" />
+  </g>
+  
+  <g>
+    <rect x="15" y="230" width="190" height="40" rx="5" fill="#181825" />
+    <text x="55" y="255" font-family="Arial" font-size="14" fill="#CDD6F4">Command History</text>
+    <rect x="20" y="240" width="20" height="20" fill="#F38BA8" />
+  </g>
+  
+  <g>
+    <rect x="15" y="280" width="190" height="40" rx="5" fill="#45475A" />
+    <text x="55" y="305" font-family="Arial" font-size="14" fill="#CDD6F4">CI/CD Monitor</text>
+    <rect x="20" y="290" width="20" height="20" fill="#A6E3A1" />
+  </g>
+  
+  <g>
+    <rect x="15" y="330" width="190" height="40" rx="5" fill="#181825" />
+    <text x="55" y="355" font-family="Arial" font-size="14" fill="#CDD6F4">Settings</text>
+    <rect x="20" y="340" width="20" height="20" fill="#FAB387" />
+  </g>
+  
+  <!-- Sidebar bottom info -->
+  <rect x="15" y="730" width="190" height="50" rx="5" fill="#313244" opacity="0.8" />
+  <text x="110" y="760" font-family="Arial" font-size="12" fill="#CDD6F4" text-anchor="middle">Local LLM: Mistral 7B</text>
+  <circle cx="30" cy="755" r="8" fill="#A6E3A1" />
+  
+  <!-- Main Content Area -->
+  <rect x="240" y="20" width="940" height="760" rx="10" fill="#313244" />
+  
+  <!-- Header -->
+  <rect x="240" y="20" width="940" height="60" rx="10" rx-bottom="0" ry-bottom="0" fill="#45475A" />
+  <text x="270" y="55" font-family="Arial" font-size="20" fill="#CDD6F4" font-weight="bold">CI/CD Monitor</text>
+  
+  <!-- Environment Filter -->
+  <g>
+    <rect x="700" y="30" width="110" height="40" rx="5" fill="#1E1E2E" />
+    <text x="755" y="55" font-family="Arial" font-size="14" fill="#CDD6F4" text-anchor="middle">All Envs</text>
+  </g>
+  
+  <g>
+    <rect x="820" y="30" width="110" height="40" rx="5" fill="#1E1E2E" />
+    <text x="875" y="55" font-family="Arial" font-size="14" fill="#CDD6F4" text-anchor="middle">All Status</text>
+  </g>
+  
+  <!-- Refresh Button -->
+  <rect x="940" y="30" width="40" height="40" rx="5" fill="#89B4FA" />
+  <text x="960" y="55" font-family="Arial" font-size="14" fill="#1E1E2E" text-anchor="middle" font-weight="bold">⟳</text>
+  
+  <!-- Trigger Build Button -->
+  <rect x="990" y="30" width="170" height="40" rx="5" fill="#A6E3A1" />
+  <text x="1075" y="55" font-family="Arial" font-size="14" fill="#1E1E2E" text-anchor="middle" font-weight="bold">+ Trigger Build</text>
+  
+  <!-- Overview Metrics -->
+  <g>
+    <rect x="250" y="90" width="225" height="120" rx="5" fill="#1E1E2E" />
+    <text x="270" y="115" font-family="Arial" font-size="14" fill="#CDD6F4" font-weight="bold">Builds Today</text>
+    <text x="365" y="160" font-family="Arial" font-size="36" fill="#A6E3A1" text-anchor="middle" font-weight="bold">24</text>
+  </g>
+  
+  <g>
+    <rect x="485" y="90" width="225" height="120" rx="5" fill="#1E1E2E" />
+    <text x="505" y="115" font-family="Arial" font-size="14" fill="#CDD6F4" font-weight="bold">Success Rate</text>
+    <text x="600" y="160" font-family="Arial" font-size="36" fill="#A6E3A1" text-anchor="middle" font-weight="bold">92%</text>
+  </g>
+  
+  <g>
+    <rect x="720" y="90" width="225" height="120" rx="5" fill="#1E1E2E" />
+    <text x="740" y="115" font-family="Arial" font-size="14" fill="#CDD6F4" font-weight="bold">Avg. Build Time</text>
+    <text x="835" y="160" font-family="Arial" font-size="36" fill="#F9E2AF" text-anchor="middle" font-weight="bold">4m12s</text>
+  </g>
+  
+  <g>
+    <rect x="955" y="90" width="225" height="120" rx="5" fill="#1E1E2E" />
+    <text x="975" y="115" font-family="Arial" font-size="14" fill="#CDD6F4" font-weight="bold">Deploy Frequency</text>
+    <text x="1070" y="160" font-family="Arial" font-size="36" fill="#89B4FA" text-anchor="middle" font-weight="bold">6/day</text>
+  </g>
+  
+  <!-- Active Pipelines -->
+  <rect x="250" y="220" width="600" height="550" rx="5" fill="#1E1E2E" />
+  <text x="270" y="250" font-family="Arial" font-size="18" fill="#CDD6F4" font-weight="bold">Active Pipelines</text>
+  
+  <!-- Pipeline 1 -->
+  <g>
+    <rect x="270" y="270" width="560" height="80" rx="5" fill="#313244" />
+    
+    <!-- Service Name -->
+    <text x="290" y="295" font-family="Arial" font-size="14" fill="#CDD6F4" font-weight="bold">Auth Service</text>
+    <text x="290" y="315" font-family="Arial" font-size="12" fill="#7F849C">main • #1254 • 12 min ago</text>
+    
+    <!-- Status Indicator -->
+    <rect x="730" y="285" width="80" height="30" rx="15" fill="#A6E3A1" />
+    <text x="770" y="305" font-family="Arial" font-size="12" fill="#1E1E2E" text-anchor="middle" font-weight="bold">Success</text>
+    
+    <!-- Pipeline Stages -->
+    <rect x="380" y="290" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="440" y="290" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="500" y="290" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="560" y="290" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="620" y="290" width="50" height="20" rx="3" fill="#A6E3A1" />
+    
+    <!-- Stage Names -->
+    <text x="405" y="335" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Build</text>
+    <text x="465" y="335" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Test</text>
+    <text x="525" y="335" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Lint</text>
+    <text x="585" y="335" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Package</text>
+    <text x="645" y="335" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Deploy</text>
+  </g>
+  
+  <!-- Pipeline 2 -->
+  <g>
+    <rect x="270" y="360" width="560" height="80" rx="5" fill="#313244" />
+    
+    <!-- Service Name -->
+    <text x="290" y="385" font-family="Arial" font-size="14" fill="#CDD6F4" font-weight="bold">API Gateway</text>
+    <text x="290" y="405" font-family="Arial" font-size="12" fill="#7F849C">feature/rate-limiting • #892 • 28 min ago</text>
+    
+    <!-- Status Indicator -->
+    <rect x="730" y="375" width="80" height="30" rx="15" fill="#F38BA8" />
+    <text x="770" y="395" font-family="Arial" font-size="12" fill="#1E1E2E" text-anchor="middle" font-weight="bold">Failed</text>
+    
+    <!-- Pipeline Stages -->
+    <rect x="380" y="380" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="440" y="380" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="500" y="380" width="50" height="20" rx="3" fill="#F38BA8" />
+    <rect x="560" y="380" width="50" height="20" rx="3" fill="#45475A" />
+    <rect x="620" y="380" width="50" height="20" rx="3" fill="#45475A" />
+    
+    <!-- Stage Names -->
+    <text x="405" y="425" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Build</text>
+    <text x="465" y="425" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Test</text>
+    <text x="525" y="425" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Lint</text>
+    <text x="585" y="425" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Package</text>
+    <text x="645" y="425" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Deploy</text>
+  </g>
+  
+  <!-- Pipeline 3 -->
+  <g>
+    <rect x="270" y="450" width="560" height="80" rx="5" fill="#313244" />
+    
+    <!-- Service Name -->
+    <text x="290" y="475" font-family="Arial" font-size="14" fill="#CDD6F4" font-weight="bold">Payment Service</text>
+    <text x="290" y="495" font-family="Arial" font-size="12" fill="#7F849C">main • #738 • 45 min ago</text>
+    
+    <!-- Status Indicator -->
+    <rect x="730" y="465" width="80" height="30" rx="15" fill="#A6E3A1" />
+    <text x="770" y="485" font-family="Arial" font-size="12" fill="#1E1E2E" text-anchor="middle" font-weight="bold">Success</text>
+    
+    <!-- Pipeline Stages -->
+    <rect x="380" y="470" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="440" y="470" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="500" y="470" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="560" y="470" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="620" y="470" width="50" height="20" rx="3" fill="#A6E3A1" />
+    
+    <!-- Stage Names -->
+    <text x="405" y="515" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Build</text>
+    <text x="465" y="515" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Test</text>
+    <text x="525" y="515" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Lint</text>
+    <text x="585" y="515" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Package</text>
+    <text x="645" y="515" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Deploy</text>
+  </g>
+  
+  <!-- Pipeline 4 -->
+  <g>
+    <rect x="270" y="540" width="560" height="80" rx="5" fill="#313244" />
+    
+    <!-- Service Name -->
+    <text x="290" y="565" font-family="Arial" font-size="14" fill="#CDD6F4" font-weight="bold">User Service</text>
+    <text x="290" y="585" font-family="Arial" font-size="12" fill="#7F849C">feature/profile-update • #421 • 1h 12m ago</text>
+    
+    <!-- Status Indicator -->
+    <rect x="730" y="555" width="80" height="30" rx="15" fill="#F9E2AF" />
+    <text x="770" y="575" font-family="Arial" font-size="12" fill="#1E1E2E" text-anchor="middle" font-weight="bold">Running</text>
+    
+    <!-- Pipeline Stages -->
+    <rect x="380" y="560" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="440" y="560" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="500" y="560" width="50" height="20" rx="3" fill="#F9E2AF" />
+    <rect x="560" y="560" width="50" height="20" rx="3" fill="#45475A" />
+    <rect x="620" y="560" width="50" height="20" rx="3" fill="#45475A" />
+    
+    <!-- Stage Names -->
+    <text x="405" y="605" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Build</text>
+    <text x="465" y="605" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Test</text>
+    <text x="525" y="605" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Lint</text>
+    <text x="585" y="605" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Package</text>
+    <text x="645" y="605" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Deploy</text>
+  </g>
+  
+  <!-- Pipeline 5 -->
+  <g>
+    <rect x="270" y="630" width="560" height="80" rx="5" fill="#313244" />
+    
+    <!-- Service Name -->
+    <text x="290" y="655" font-family="Arial" font-size="14" fill="#CDD6F4" font-weight="bold">Frontend App</text>
+    <text x="290" y="675" font-family="Arial" font-size="12" fill="#7F849C">main • #1843 • 2h 05m ago</text>
+    
+    <!-- Status Indicator -->
+    <rect x="730" y="645" width="80" height="30" rx="15" fill="#A6E3A1" />
+    <text x="770" y="665" font-family="Arial" font-size="12" fill="#1E1E2E" text-anchor="middle" font-weight="bold">Success</text>
+    
+    <!-- Pipeline Stages -->
+    <rect x="380" y="650" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="440" y="650" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="500" y="650" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="560" y="650" width="50" height="20" rx="3" fill="#A6E3A1" />
+    <rect x="620" y="650" width="50" height="20" rx="3" fill="#A6E3A1" />
+    
+    <!-- Stage Names -->
+    <text x="405" y="695" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Build</text>
+    <text x="465" y="695" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Test</text>
+    <text x="525" y="695" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Lint</text>
+    <text x="585" y="695" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Package</text>
+    <text x="645" y="695" font-family="Arial" font-size="10" fill="#CDD6F4" text-anchor="middle">Deploy</text>
+  </g>
+  
+  <!-- Right Panel - Build Insights -->
+  <rect x="870" y="220" width="310" height="550" rx="5" fill="#1E1E2E" />
+  <text x="890" y="250" font-family="Arial" font-size="18" fill="#CDD6F4" font-weight="bold">Build Insights</text>
+  
+  <!-- Build Timing Chart -->
+  <rect x="890" y="270" width="270" height="150" rx="5" fill="#313244" />
+  <text x="910" y="290" font-family="Arial" font-size="14" fill="#CDD6F4">Build Time Trend (Last 7 Days)</text>
+  
+  <!-- Line Chart -->
+  <polyline points="910,380 940,360 970,370 1000,350 1030,340 1060,320 1090,330 1120,290" 
+           fill="none" stroke="#89B4FA" stroke-width="2" />
+  
+  <!-- Chart Axes -->
+  <line x1="910" y1="380" x2="1130" y2="380" stroke="#7F849C" stroke-width="1" />
+  <line x1="910" y1="380" x2="910" y2="280" stroke="#7F849C" stroke-width="1" />
+  
+  <!-- Quality Metrics -->
+  <rect x="890" y="440" width="270" height="140" rx="5" fill="#313244" />
+  <text x="910" y="460" font-family="Arial" font-size="14" fill="#CDD6F4">SonarCloud Quality Metrics</text>
+  
+  <g>
+    <text x="910" y="490" font-family="Arial" font-size="12" fill="#CDD6F4">Code Coverage:</text>
+    <rect x="1020" y="480" width="120" height="15" rx="7" fill="#45475A" />
+    <rect x="1020" y="480" width="96" height="15" rx="7" fill="#A6E3A1" />
+    <text x="1150" y="490" font-family="Arial" font-size="10" fill="#CDD6F4">80%</text>
+  </g>
+  
+  <g>
+    <text x="910" y="520" font-family="Arial" font-size="12" fill="#CDD6F4">Code Duplications:</text>
+    <rect x="1020" y="510" width="120" height="15" rx="7" fill="#45475A" />
+    <rect x="1020" y="510" width="24" height="15" rx="7" fill="#A6E3A1" />
+    <text x="1150" y="520" font-family="Arial" font-size="10" fill="#CDD6F4">2%</text>
+  </g>
+  
+  <g>
+    <text x="910" y="550" font-family="Arial" font-size="12" fill="#CDD6F4">Code Smells:</text>
+    <rect x="1020" y="540" width="120" height="15" rx="7" fill="#45475A" />
+    <rect x="1020" y="540" width="36" height="15" rx="7" fill="#F9E2AF" />
+    <text x="1150" y="550" font-family="Arial" font-size="10" fill="#CDD6F4">32</text>
+  </g>
+  
+  <!-- Recent Issues -->
+  <rect x="890" y="600" width="270" height="170" rx="5" fill="#313244" />
+  <text x="910" y="620" font-family="Arial" font-size="14" fill="#CDD6F4">Recent Issues</text>
+  
+  <g>
+    <rect x="910" y="635" width="230" height="35" rx="3" fill="#1E1E2E" />
+    <circle cx="925" cy="652" r="8" fill="#F38BA8" />
+    <text x="940" y="648" font-family="Arial" font-size="10" fill="#CDD6F4" font-weight="bold">API Gateway Linting Failed</text>
+    <text x="940" y="663" font-family="Arial" font-size="9" fill="#7F849C">28 min ago • ESLint error in rate limiter</text>
+  </g>
+  
+  <g>
+    <rect x="910" y="680" width="230" height="35" rx="3" fill="#1E1E2E" />
+    <circle cx="925" cy="697" r="8" fill="#F9E2AF" />
+    <text x="940" y="693" font-family="Arial" font-size="10" fill="#CDD6F4" font-weight="bold">Test Coverage Declining</text>
+    <text x="940" y="708" font-family="Arial" font-size="9" fill="#7F849C">2 hours ago • Below threshold in User Service</text>
+  </g>
+  
+  <g>
+    <rect x="910" y="725" width="230" height="35" rx="3" fill="#1E1E2E" />
+    <circle cx="925" cy="742" r="8" fill="#A6E3A1" />
+    <text x="940" y="738" font-family="Arial" font-size="10" fill="#CDD6F4" font-weight="bold">Build Time Improvement</text>
+    <text x="940" y="753" font-family="Arial" font-size="9" fill="#7F849C">3 hours ago • Frontend build 30% faster</text>
+  </g>
+</svg>
