@@ -1117,13 +1117,12 @@ export class AgentOrchestrator extends EventEmitter {
    * Clean up resources
    */
   async dispose(): Promise<void> {
-    // Stop CI/CD tracker
-    this.cicdTracker.stopRefreshTimer();
-    
-    // Save conversation
+    console.log('Disposing Agent Orchestrator...');
+    // Clean up resources
     await this.saveActiveConversation();
-    
-    // Remove event listeners
-    this.removeAllListeners();
+    this.cicdTracker?.removeAllListeners();
+    this.taskManager?.removeAllListeners();
+    // Dispose other components if necessary
+    console.log('Agent Orchestrator disposed');
   }
 }

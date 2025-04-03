@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+[DESIGN-GUIDE.md](mdc:DESIGN-GUIDE.md)
+[implementation.md](mdc:arch/implementation.md)
+- You can @ files here
+- You can use markdown but dont have to

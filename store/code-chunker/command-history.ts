@@ -239,7 +239,7 @@ export class CommandHistoryAnalyzer {
       return {
         success: false,
         output: '',
-        error: error.toString()
+        error: typeof error === 'string' ? error : (error instanceof Error ? error.message : String(error))
       };
     }
   }
