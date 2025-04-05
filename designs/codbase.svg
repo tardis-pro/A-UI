@@ -55,7 +55,7 @@
   <rect x="240" y="70" width="720" height="670" rx="10" fill="#313244" />
   
   <!-- Chat Header -->
-  <rect x="240" y="70" width="720" height="50" rx="10" rx="0" ry="0" fill="#45475A" />
+  <rect x="240" y="70" width="720" height="50" rx="10" fill="#45475A" />
   <text x="270" y="100" font-family="Arial" font-size="16" fill="#CDD6F4" font-weight="bold">Code Assistant</text>
   
   <!-- Chat messages area -->
@@ -89,7 +89,52 @@
     
     <!-- Code block -->
     <rect x="325" y="395" width="590" height="155" fill="#181825" rx="5" />
-  
+  <text x="335" y="415" font-family="Arial" font-size="12" fill="#CDD6F4" style="white-space: pre">// middleware/auth.js
+const jwt = require('jsonwebtoken');
+
+module.exports = function(req, res, next) {
+  const token = req.header('x-auth-token');
+  if (!token) return res.status(401).json({ msg: 'No token, authorization denied' });
+
+  try {
+    // Verify token and check expiration
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Additional expiration check
+    const currentTime = Math.floor(Date.now() / 1000);
+    if (decoded.exp &lt; currentTime) {
+      return res.status(401).json({ msg: 'Token expired' });
+    }
+    
+    req.user = decoded.user;
+    next();
+  } catch (err) {
+    res.status(401).json({ msg: 'Token is not valid' });
+  }
+};</text><text x="335" y="415" font-family="Arial" font-size="12" fill="#CDD6F4" style="white-space: pre">
+// middleware/auth.js \n
+const jwt = require('jsonwebtoken');
+
+module.exports = function(req, res, next) {
+  const token = req.header('x-auth-token');
+  if (!token) return res.status(401).json({ msg: 'No token, authorization denied' });
+
+  try {
+    // Verify token and check expiration
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Additional expiration check
+    const currentTime = Math.floor(Date.now() / 1000);
+    if (decoded.exp &lt; currentTime) {
+      return res.status(401).json({ msg: 'Token expired' });
+    }
+    
+    req.user = decoded.user;
+    next();
+  } catch (err) {
+    res.status(401).json({ msg: 'Token is not valid' });
+  }
+};</text>
   </g>
   
   <!-- Actions toolbar -->
@@ -105,7 +150,7 @@
   </g>
   
   <!-- Chat input area -->
-  <rect x="240" y="660" width="720" height="80" rx="0" ry="0" rx-bottom="10" ry-bottom="10" fill="#45475A" />
+  <rect x="240" y="660" width="720" height="80" rx="10" fill="#45475A" />
   <rect x="260" y="680" width="640" height="40" rx="5" fill="#1E1E2E" />
   <text x="280" y="705" font-family="Arial" font-size="14" fill="#7F849C">Ask me about your code...</text>
   
@@ -116,7 +161,7 @@
   <rect x="980" y="70" width="200" height="670" fill="#181825" rx="10" />
   
   <!-- Context panel header -->
-  <rect x="980" y="70" width="200" height="50" fill="#45475A" rx="10" rx-bottom="0" ry-bottom="0" />
+  <rect x="980" y="70" width="200" height="50" rx="10" fill="#45475A" />
   <text x="1000" y="100" font-family="Arial" font-size="16" fill="#CDD6F4" font-weight="bold">Current Context</text>
   
   <!-- File tree -->
