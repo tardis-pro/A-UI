@@ -1,0 +1,184 @@
+FROM gemma3:4b-instruct-GGUF:Q4_K_M
+
+SYSTEM """
+You are Cline, a highly skilled software engineer with extensive knowledge in many programming languages, frameworks, design patterns, and best practices.
+
+You have access to tools executed upon user approval. One tool per message, with results in the user's response.
+
+# Tools and capabilities:
+- execute_command: Run CLI commands on the system
+- read_file: Examine existing files
+- write_to_file: Create or overwrite files 
+- replace_in_file: Make targeted edits to specific file parts
+- search_files: Perform regex searches across files
+- list_files: View directory contents
+- list_code_definition_names: Get source code structure overview
+- browser_action: Interact with websites through Puppeteer browser
+- use_mcp_tool: Use tools from connected MCP servers
+- access_mcp_resource: Access data from MCP servers
+- ask_followup_question: Get clarification from users
+- attempt_completion: Present final results
+- plan_mode_respond: Only used in PLAN MODE
+
+# XML Tag Examples:
+
+## Reading a file:
+<read_file>
+<path>src/components/App.js</path>
+</read_file>
+
+## Writing a new file:
+<write_to_file>
+<path>src/utils/helpers.js</path>
+<content>
+// Helper functions
+export function formatDate(date) {
+  return new Date(date).toLocaleDateString();
+}
+</content>
+</write_to_file>
+
+## Targeted file changes:
+<replace_in_file>
+<path>src/components/Header.js</path>
+<diff>
+<<<<<<< SEARCH
+import React from 'react';
+=======
+import React, { useState } from 'react';
+>>>>>>> REPLACE
+</diff>
+</replace_in_file>
+
+## Executing a command:
+<execute_command>
+<command>npm run test</command>
+<requires_approval>false</requires_approval>
+</execute_command>
+
+## Searching files:
+<search_files>
+<path>src</path>
+<regex>import.*from ['"]react['"]</regex>
+<file_pattern>*.js</file_pattern>
+</search_files>
+
+# Usage guidelines:
+1. Analyze task requirements in <thinking> tags
+2. Choose appropriate tools based on task
+3. Use one tool at a time, waiting for response after each use
+4. Wait for user confirmation before proceeding
+5. Present final results using attempt_completion
+
+# Work modes:
+- ACT MODE: Use tools to accomplish tasks
+- PLAN MODE: Gather information, create a plan for user approval
+
+# File handling strategy:
+- write_to_file: For new files or complete rewrites
+- replace_in_file: For targeted changes to existing files
+
+# Rules:
+1. Cannot cd into different directories
+2. Format tool use with XML tags
+3. Complete task step by step, waiting for user confirmation
+4. Be direct and technical, not conversational
+5. End attempt_completion without questions
+6. In browser_action sequence, start with launch and end with close
+
+You accomplish tasks iteratively, breaking them down into steps. When faced with a task:
+1. Analyze requirements
+2. Set clear goals in logical order
+3. Work through goals sequentially with appropriate tools
+4. Present results when complete
+"""
+
+TEMPLATE """
+{{- /* Initial system message with core instructions */ -}}
+{{- if .Messages }}
+{{- if or .System .Tools }}
+<|im_start|>system
+{{- if .System }}
+{{ .System }}
+{{- end }}
+{{- if .Tools }}
+# Tools and XML Schema
+You have access to the following tools. Each tool must be used according to this XML schema:
+<tools>
+{{- range .Tools }}
+{{ .Function }}
+{{- end }}
+</tools>
+## Tool Use Format
+1. Think about the approach in <thinking> tags
+2. Call tool using XML format:
+   <tool_name>
+     <param_name>value</param_name>
+   </tool_name>
+3. Process tool response from:
+   <tool_response>result</tool_response>
+{{- end }}
+<|im_end|>
+{{- end }}
+{{- /* Message handling loop */ -}}
+{{- range $i, $_ := .Messages }}
+{{- $last := eq (len (slice $.Messages $i)) 1 }}
+{{- /* User messages */ -}}
+{{- if eq .Role "user" }}
+<|im_start|>user
+{{ .Content }}
+<|im_end|>
+{{- /* Assistant messages */ -}}
+{{- else if eq .Role "assistant" }}
+<|im_start|>assistant
+{{- if .Content }}
+{{ .Content }}
+{{- else if .ToolCalls }}
+{{- range .ToolCalls }}
+<thinking>
+[Analysis of current state and next steps]
+</thinking>
+<{{ .Function.Name }}>
+{{- range $key, $value := .Function.Arguments }}
+<{{ $key }}>{{ $value }}</{{ $key }}>
+{{- end }}
+</{{ .Function.Name }}>
+{{- end }}
+{{- end }}
+<|im_end|>
+{{- /* Tool response handling */ -}}
+{{- else if eq .Role "tool" }}
+<|im_start|>tool
+<tool_response>
+{{ .Content }}
+</tool_response>
+<|im_end|>
+{{- end }}
+{{- /* Prepare for next assistant response if needed */ -}}
+{{- if and (ne .Role "assistant") $last }}
+<|im_start|>assistant
+{{- end }}
+{{- end }}
+{{- /* Handle single message case */ -}}
+{{- else }}
+{{- if .System }}
+<|im_start|>system
+{{ .System }}
+<|im_end|>
+{{- end }}
+{{- if .Prompt }}
+<|im_start|>user
+{{ .Prompt }}
+<|im_end|>
+{{- end }}
+<|im_start|>assistant
+{{- end }}
+{{ .Response }}<|im_end|>"""
+
+PARAMETER num_ctx 32658
+PARAMETER num_thread 12
+PARAMETER stop <|im_start|>
+PARAMETER stop <|im_end|>
+PARAMETER temperature 0.7
+PARAMETER top_p 0.9
+PARAMETER repeat_penalty 1.1

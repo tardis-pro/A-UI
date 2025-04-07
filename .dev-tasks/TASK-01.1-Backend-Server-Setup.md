@@ -20,8 +20,8 @@ Set up the basic structure for the Node.js backend server using TypeScript and E
     *   If using root `package.json`, ensure `type: "module"` is set (already present).
 
 3.  **Install Dependencies:**
-    *   Install runtime dependencies: `npm install express cors axios`
-    *   Install development dependencies: `npm install -D typescript @types/node @types/express @types/cors ts-node nodemon` (Nodemon for auto-reloading during development).
+    *   Install runtime dependencies: `pnpm install express cors axios`
+    *   Install development dependencies: `pnpm install -D typescript @types/node @types/express @types/cors ts-node nodemon` (Nodemon for auto-reloading during development).
 
 4.  **Configure TypeScript (`tsconfig.server.json`):**
     *   Create a `tsconfig.server.json` file (or similar name) specifically for the backend.
@@ -49,10 +49,10 @@ Set up the basic structure for the Node.js backend server using TypeScript and E
     *   Add a script for development using `ts-node` or `nodemon`: `"dev:backend": "nodemon --watch 'server/**/*.ts' --exec 'ts-node' server/index.ts"` (Adjust `ts-node` usage based on ES module setup).
 
 7.  **Verification:**
-    *   Run `npm run build:backend` to ensure compilation succeeds.
-    *   Run `npm run start:backend` and verify the server starts and logs the listening port.
+    *   Run `pnpm run build:backend` to ensure compilation succeeds.
+    *   Run `pnpm run start:backend` and verify the server starts and logs the listening port.
     *   Access the `/health` endpoint (e.g., `curl http://localhost:3001/health`) and verify the `ok` status.
-    *   Run `npm run dev:backend` and verify the server starts and restarts automatically upon saving changes to `server/index.ts`.
+    *   Run `pnpm run dev:backend` and verify the server starts and restarts automatically upon saving changes to `server/index.ts`.
 
 ## Definition of Done
 

@@ -111,29 +111,6 @@ module.exports = function(req, res, next) {
   } catch (err) {
     res.status(401).json({ msg: 'Token is not valid' });
   }
-};</text><text x="335" y="415" font-family="Arial" font-size="12" fill="#CDD6F4" style="white-space: pre">
-// middleware/auth.js \n
-const jwt = require('jsonwebtoken');
-
-module.exports = function(req, res, next) {
-  const token = req.header('x-auth-token');
-  if (!token) return res.status(401).json({ msg: 'No token, authorization denied' });
-
-  try {
-    // Verify token and check expiration
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // Additional expiration check
-    const currentTime = Math.floor(Date.now() / 1000);
-    if (decoded.exp &lt; currentTime) {
-      return res.status(401).json({ msg: 'Token expired' });
-    }
-    
-    req.user = decoded.user;
-    next();
-  } catch (err) {
-    res.status(401).json({ msg: 'Token is not valid' });
-  }
 };</text>
   </g>
   
