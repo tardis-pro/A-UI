@@ -1,11 +1,11 @@
 from datetime import datetime
 from typing import Dict, List, Optional, Any, Literal
 from pydantic import BaseModel, Field
-from sqlalchemy import Column, String, Float, Boolean, DateTime, ForeignKey, Table, JSON
+from sqlalchemy import Column, String, Float, Boolean, DateTime, ForeignKey, Table, JSON, MetaData
 from sqlalchemy.orm import relationship
 from .base import Base
 
-# Association table for many-to-many relationships between knowledge items
+# Create tables using Base's metadata
 knowledge_relation = Table(
     'knowledge_relation',
     Base.metadata,
@@ -13,7 +13,7 @@ knowledge_relation = Table(
     Column('target_id', ForeignKey('knowledgeitem.id'), primary_key=True),
     Column('relation_type', String(255), nullable=False),
     Column('confidence', Float, default=1.0),
-    Column('metadata', JSON, nullable=True),
+    Column('metadata_json', JSON, nullable=True),  # Renamed from metadata to metadata_json
     Column('created_at', DateTime, default=datetime.utcnow)
 )
 
@@ -40,20 +40,20 @@ class KnowledgeItem(Base):
     """Database model for knowledge items"""
     
     content = Column(String(4000), nullable=False)
-    type = Column(String(50), nullable=False)  # "explicit", "tacit", "procedural", "contextual"
-    subtype = Column(String(100), nullable=True)  # More specific categorization
-    source_type = Column(String(50), nullable=False)
-    source_identifier = Column(String(255), nullable=False)
+    type = Column(String(50), nullable=False, index=True)  # "explicit", "tacit", "procedural", "contextual"
+    subtype = Column(String(100), nullable=True, index=True)  # More specific categorization
+    source_type = Column(String(50), nullable=False, index=True)
+    source_identifier = Column(String(255), nullable=False, index=True)
     source_url = Column(String(1000), nullable=True)
-    source_author = Column(String(255), nullable=True)
-    source_timestamp = Column(DateTime, nullable=True)
-    confidence = Column(Float, default=1.0)
-    is_validated = Column(Boolean, default=False)
-    embedding_id = Column(String(255), nullable=True)  # ID in vector database
+    source_author = Column(String(255), nullable=True, index=True)
+    source_timestamp = Column(DateTime, nullable=True, index=True)
+    confidence = Column(Float, default=1.0, index=True)
+    is_validated = Column(Boolean, default=False, index=True)
+    embedding_id = Column(String(255), nullable=True, index=True)  # ID in vector database
     
     # JSON fields for flexible storage
     tags = Column(JSON, default=list)
-    metadata = Column(JSON, default=dict)
+    item_metadata = Column(JSON, default=dict)  # Renamed from metadata to item_metadata
     
     # Relationships (self-referential for knowledge items)
     related_items = relationship(
@@ -91,14 +91,14 @@ class KnowledgeItemModel(BaseModel):
     tags: List[str] = []
     confidence: float = 1.0
     is_validated: bool = False
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    item_metadata: Dict[str, Any] = Field(default_factory=dict)
     relations: List[KnowledgeRelationModel] = []
     embedding_id: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class KnowledgeItemCreateRequest(BaseModel):
     """Request model for creating knowledge items"""
@@ -107,7 +107,7 @@ class KnowledgeItemCreateRequest(BaseModel):
     subtype: Optional[str] = None
     source: KnowledgeSourceModel
     tags: List[str] = []
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    item_metadata: Dict[str, Any] = Field(default_factory=dict)
     relations: List[KnowledgeRelationModel] = []
 
 class KnowledgeItemResponse(BaseModel):

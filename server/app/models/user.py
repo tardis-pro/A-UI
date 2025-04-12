@@ -12,8 +12,8 @@ class User(Base):
     is_superuser = Column(Boolean, default=False)
     
     # Relationships
-    discussions = relationship("Discussion", back_populates="owner")
-    agents = relationship("Agent", back_populates="owner")
+    discussions = relationship("Discussion", back_populates="owner", cascade="all, delete-orphan")
+    agents = relationship("Agent", back_populates="owner", cascade="all, delete-orphan")
     
     # Add relationships here as needed
     # discussions = relationship("Discussion", back_populates="user")

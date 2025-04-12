@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:5173"]
     
     # Database
-    DATABASE_URL: str = "sqlite:///./app.db"  # TODO: Update for production
+    DATABASE_URL: str = "sqlite+aiosqlite:///./app1.db"  # TODO: Update for production
     
     # Redis
     REDIS_URL: str = "redis://localhost:6379"

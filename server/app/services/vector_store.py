@@ -3,6 +3,7 @@ import chromadb
 from chromadb.config import Settings
 from pydantic import BaseModel
 
+from ..models.code import CodeChunk, CodeMetadata
 from ..config import get_settings
 
 settings = get_settings()

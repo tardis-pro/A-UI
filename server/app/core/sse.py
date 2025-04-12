@@ -154,6 +154,7 @@ async def sse_event_generator(request: Request, queue: asyncio.Queue) -> AsyncIt
     except Exception as e:
         logger.exception(f"SSE stream error: {e}")
     finally:
+        logger.info(f"SSE stream closed for client_id: {client_id}")
         # Clean up is handled at the route level
 
 
