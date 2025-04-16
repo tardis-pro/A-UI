@@ -5,6 +5,7 @@ flowchart TD
         Search[Code Search]
         Terminal[Embedded Terminal]
         Dashboard[Dashboard]
+        APIClient[API Client SDK]
     end
 
     subgraph "Agent Orchestrator Core"
@@ -35,12 +36,37 @@ flowchart TD
         CIMonitor[CI/CD Monitor]
     end
     
+    subgraph "API Backend Layer"
+        FastAPI[FastAPI Server]
+        AuthService[Auth Service]
+        AIService[AI Model Service]
+        KTService[Knowledge Service]
+        CodeService[Code Processing Service]
+        WebSockets[WebSocket Service]
+    end
+    
     %% Connections
-    UI --> AOC
-    Chat --> AOC
-    Search --> AOC
-    Terminal --> AOC
-    Dashboard --> AOC
+    UI --> APIClient
+    Chat --> APIClient
+    Search --> APIClient
+    Terminal --> APIClient
+    Dashboard --> APIClient
+    
+    APIClient --> FastAPI
+    
+    FastAPI --> AuthService
+    FastAPI --> AIService
+    FastAPI --> KTService
+    FastAPI --> CodeService
+    FastAPI --> WebSockets
+    
+    AIService --> LocalLLM
+    AIService --> ExternalLLM
+    KTService --> VectorDB
+    KTService --> KnowledgeCapture
+    KTService --> KnowledgeClassify
+    CodeService --> CodeChunker
+    CodeService --> EmbeddingGen
     
     AOC --> ContextMgr
     AOC --> ToolInvoker
@@ -62,3 +88,5 @@ flowchart TD
     PromptMgr --> ExternalLLM
     LocalLLM --> AOC
     ExternalLLM --> AOC
+    
+    APIClient --> AOC
