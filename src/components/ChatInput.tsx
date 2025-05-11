@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { TextField, Button, Box } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+
 
 interface ChatInputProps {
     onSendMessage: (message: string) => void;
@@ -19,15 +22,18 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
     };
 
     return (
-        <div className="chat-input">
-            <input
-                type="text"
+        <Box sx={{ display: 'flex', gap: 1, p: 1, borderTop: '1px solid #ccc' }}>
+            <TextField
+                fullWidth
+                placeholder="Type your message..."
+                variant="outlined"
                 value={message}
                 onChange={handleInputChange}
-                placeholder="Type your message..."
             />
-            <button onClick={handleSendMessage}>Send</button>
-        </div>
+            <Button variant="contained" endIcon={<SendIcon />} onClick={handleSendMessage}>
+                Send
+            </Button>
+        </Box>
     );
 };
 
