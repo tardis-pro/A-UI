@@ -115,7 +115,8 @@ class KnowledgeService:
         source_types: Optional[List[str]] = None,
         min_confidence: float = 0.0,
         limit: int = 10,
-        include_relations: bool = False
+        include_relations: bool = False,
+        time_range: Optional[Dict[str, datetime]] = None
     ) -> List[KnowledgeItem]:
         """Search for knowledge items by semantic similarity"""
         # First, search in vector database
@@ -146,7 +147,16 @@ class KnowledgeService:
         
         # Query database for these items
         items = self.db.query(KnowledgeItem).filter(KnowledgeItem.id.in_(item_ids))
-        
+
+        # Apply time range filter
+        if time_range:
+            start_time = time_range.get("start")
+            end_time = time_range.get("end")
+            if start_time:
+                items = items.filter(KnowledgeItem.source_timestamp >= start_time)
+            if end_time:
+                items = items.filter(KnowledgeItem.source_timestamp <= end_time)
+
         # Apply additional filters
         if subtypes:
             items = items.filter(KnowledgeItem.subtype.in_(subtypes))

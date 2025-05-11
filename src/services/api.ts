@@ -218,4 +218,15 @@ export function clearApiCache(): void {
     cache.clear();
 }
 
+export async function getCommandHistory(limit: number = 10): Promise<string[]> {
+    return withLoadingState(
+        'getCommandHistory',
+        async () => {
+            const response = await api.get<string[]>(`/command_history?limit=${limit}`);
+            return response.data;
+        },
+        'Failed to fetch command history'
+    );
+}
+
 export default api;
