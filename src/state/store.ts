@@ -6,6 +6,7 @@ import themeReducer from './slices/themeSlice';
 import layoutReducer from './slices/layoutSlice';
 import navigationReducer from './slices/navigationSlice';
 import userPreferencesReducer from './slices/userPreferencesSlice';
+import apiReducer from './slices/apiSlice';
 
 const persistConfig = {
     key: 'root',
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
     layout: layoutReducer,
     navigation: navigationReducer,
     userPreferences: userPreferencesReducer,
+    api: apiReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

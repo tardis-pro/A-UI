@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Box, IconButton, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { BrowserRouter } from 'react-router-dom';
 import {
   Brightness4,
   Brightness7,
@@ -16,11 +17,14 @@ import {
 } from './components/layout';
 import { createAppTheme } from './theme/index';
 import {
-  RouterProvider,
   NavigationProvider,
   NavigationShortcuts
 } from './navigation';
-import { useTheme, useAppDispatch, useLayout } from './state';
+import { useTheme, useLayout } from './state';
+import { useAppDispatch } from './state/hooks/core';
+import ErrorBoundary from './components/ErrorBoundary';
+import ApiStatusIndicator from './components/ApiStatusIndicator';
+import { wsService } from './services/websocket';
 
 const ThemeToggle = () => {
   const { mode } = useTheme();
@@ -45,11 +49,11 @@ const RightSidebar = () => (
     <Sidebar.Section title="Status">
       <ListItem>
         <ListItemIcon>
-          <CheckCircle color="success" />
+          <ApiStatusIndicator />
         </ListItemIcon>
         <ListItemText
-          primary="System Status"
-          secondary="All systems operational"
+          primary="API Status"
+          secondary={<ApiStatusIndicator showDetails />}
         />
       </ListItem>
       <ListItem>
@@ -78,17 +82,32 @@ const App: React.FC = () => {
   const { mode } = useTheme();
   const theme = React.useMemo(() => createAppTheme(mode), [mode]);
 
+  // Initialize WebSocket connection
+  useEffect(() => {
+    wsService.connect();
+
+    return () => {
+      wsService.disconnect();
+    };
+  }, []);
+
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <NavigationProvider>
-        <LayoutProvider>
-          <RouterProvider />
-          <NavigationShortcuts />
-          <ThemeToggle />
-        </LayoutProvider>
-      </NavigationProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <BrowserRouter>
+          <NavigationProvider>
+            <LayoutProvider>
+              <Layout>
+                <NavigationShortcuts />
+                <ThemeToggle />
+                <RightSidebar />
+              </Layout>
+            </LayoutProvider>
+          </NavigationProvider>
+        </BrowserRouter>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 };
 
