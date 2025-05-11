@@ -1,61 +1,95 @@
 import React from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import Box from '@mui/material/Box';
-import { styled } from '@mui/material/styles';
-import Sidebar from './components/Sidebar';
-import MainContent from './components/MainContent';
-import RightSidebar from './components/RightSidebar';
+import { Box, IconButton, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import {
+  Brightness4,
+  Brightness7,
+  Notifications,
+  CheckCircle,
+  Error
+} from '@mui/icons-material';
+import {
+  Layout,
+  LayoutProvider,
+  Sidebar,
+} from './components/layout';
+import { createAppTheme } from './theme/index';
+import {
+  RouterProvider,
+  NavigationProvider,
+  NavigationShortcuts
+} from './navigation';
+import { useTheme, useAppDispatch, useLayout } from './state';
 
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#89B4FA',
-    },
-    secondary: {
-      main: '#F38BA8',
-    },
-    background: {
-      default: '#1E1E2E',
-      paper: '#313244',
-    },
-    text: {
-      primary: '#CDD6F4',
-      secondary: '#7F849C',
-    },
-  },
-  typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-          borderRadius: 8,
-        },
-      },
-    },
-  },
-});
+const ThemeToggle = () => {
+  const { mode } = useTheme();
+  const dispatch = useAppDispatch();
 
-const AppContainer = styled(Box)({
-  display: 'flex',
-  minHeight: '100vh',
-});
+  return (
+    <IconButton
+      onClick={() => dispatch({ type: 'theme/toggleThemeMode' })}
+      color="inherit"
+      sx={{ position: 'absolute', right: 2, top: 2 }}
+    >
+      {mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
+    </IconButton>
+  );
+};
+
+const RightSidebar = () => (
+  <Sidebar
+    position="right"
+    title="Details"
+  >
+    <Sidebar.Section title="Status">
+      <ListItem>
+        <ListItemIcon>
+          <CheckCircle color="success" />
+        </ListItemIcon>
+        <ListItemText
+          primary="System Status"
+          secondary="All systems operational"
+        />
+      </ListItem>
+      <ListItem>
+        <ListItemIcon>
+          <Notifications color="info" />
+        </ListItemIcon>
+        <ListItemText
+          primary="Notifications"
+          secondary="3 unread messages"
+        />
+      </ListItem>
+      <ListItem>
+        <ListItemIcon>
+          <Error color="warning" />
+        </ListItemIcon>
+        <ListItemText
+          primary="Warnings"
+          secondary="2 minor issues"
+        />
+      </ListItem>
+    </Sidebar.Section>
+  </Sidebar>
+);
 
 const App: React.FC = () => {
+  const { mode } = useTheme();
+  const theme = React.useMemo(() => createAppTheme(mode), [mode]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppContainer>
-        <Sidebar />
-        <MainContent />
-        <RightSidebar />
-      </AppContainer>
+      <NavigationProvider>
+        <LayoutProvider>
+          <RouterProvider />
+          <NavigationShortcuts />
+          <ThemeToggle />
+        </LayoutProvider>
+      </NavigationProvider>
     </ThemeProvider>
   );
 };
 
-export default App; 
+export default App;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Box, Container, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import FeatureSections from './sections/FeatureSections';
+import FeatureSections from './components/FeatureSections';
 
 const DemoContainer = styled(Box)(({ theme }) => ({
   background: '#1E1E2E',
