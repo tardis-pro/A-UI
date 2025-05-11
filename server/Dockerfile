@@ -24,14 +24,12 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Download and cache models during build
-RUN python3 -c '
-from transformers import AutoTokenizer, AutoModelForCausalLM; \
+RUN python3 -c 'from transformers import AutoTokenizer, AutoModelForCausalLM; \
 model_name = "huggingface/mistral-7b-instruct"; \
 print(f"Downloading {model_name}..."); \
 AutoTokenizer.from_pretrained(model_name); \
 AutoModelForCausalLM.from_pretrained(model_name, device_map="auto", load_in_4bit=True); \
-print("Model downloaded successfully!")
-'
+print("Model downloaded successfully!")'
 
 # Copy application code
 COPY . .

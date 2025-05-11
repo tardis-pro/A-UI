@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosError } from 'axios';
+import axios, { AxiosInstance, AxiosError, AxiosDefaults, HeadersDefaults, AxiosHeaderValue } from 'axios';
 import { Message, Conversation, MessageRole } from '../../store/types';
 import { store } from '../state/store';
 import {
@@ -9,14 +9,44 @@ import {
     updateLastSync
 } from '../state/slices/apiSlice';
 
-// Create axios instance with default config
-const api: AxiosInstance = axios.create({
+type CustomAxiosConfig = Omit<AxiosDefaults, 'headers'> & {
+    headers: HeadersDefaults & { [key: string]: AxiosHeaderValue };
+    retryAttempts: number;
+};
+
+const defaultConfig: AxiosDefaults = {
     baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api',
     timeout: 10000,
     headers: {
-        'Content-Type': 'application/json'
+        'common': {
+            'Content-Type': 'application/json'
+        },
+        'delete': {},
+        'get': {},
+        'head': {},
+        'post': {},
+        'put': {},
+        'patch': {}
     }
-});
+};
+
+const customConfig: CustomAxiosConfig = {
+    retryAttempts: parseInt(import.meta.env.VITE_API_RETRY_ATTEMPTS || '2', 10), // Configure retry attempts
+    headers: {
+        'common': {
+            'Content-Type': 'application/json'
+        },
+        'delete': {},
+        'get': {},
+        'head': {},
+        'post': {},
+        'put': {},
+        'patch': {}
+    }
+} as CustomAxiosConfig;
+
+// Create axios instance with default config
+const api: AxiosInstance = axios.create(Object.assign(defaultConfig, customConfig));
 
 // Add request interceptor for auth token
 api.interceptors.request.use(
@@ -25,6 +55,8 @@ api.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+        // Log the request
+        console.log(`Requesting ${config.method?.toUpperCase()} ${config.url} with data:`, config.data);
         return config;
     },
     (error) => Promise.reject(error)
@@ -40,6 +72,11 @@ api.interceptors.response.use(
     },
     async (error: AxiosError) => {
         const requestId = error.config?.url || 'unknown';
+        const baseURL = error.config?.baseURL || '';
+        const requestUrl = `${baseURL}${requestId}`;
+
+        // Log the error
+        console.error(`API Error for ${requestUrl}:`, error.message, error.response?.data);
 
         // Update connection status for network errors
         if (error.code === 'ECONNABORTED' || !error.response) {
@@ -49,12 +86,12 @@ api.interceptors.response.use(
         // Retry logic for network errors or 5xx responses
         if (error.code === 'ECONNABORTED' || (error.response?.status ?? 0) >= 500) {
             const config = error.config;
+            const retryCount = (api.defaults as CustomAxiosConfig).retryAttempts || 2;
 
-            // Only retry twice
-            if (!config || (config as any)._retryCount >= 2) {
+            if (!config || (config as any)._retryCount >= retryCount) {
                 store.dispatch(setError({
                     key: requestId,
-                    error: 'Maximum retry attempts reached'
+                    error: `Maximum retry attempts reached for ${requestUrl}`
                 }));
                 return Promise.reject(error);
             }
@@ -62,13 +99,17 @@ api.interceptors.response.use(
             store.dispatch(incrementRetry(requestId));
             (config as any)._retryCount = ((config as any)._retryCount || 0) + 1;
 
-            // Exponential backoff
             const backoff = Math.pow(2, (config as any)._retryCount) * 1000;
             await new Promise(resolve => setTimeout(resolve, backoff));
 
+            console.log(`Retrying ${requestUrl} (attempt ${(config as any)._retryCount})`);
             return api(config);
         }
 
+        store.dispatch(setError({
+            key: requestId,
+            error: `API request failed for ${requestUrl}: ${error.message}`
+        }));
         return Promise.reject(error);
     }
 );

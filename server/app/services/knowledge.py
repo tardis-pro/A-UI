@@ -236,7 +236,88 @@ class KnowledgeService:
         
         result = self.db.execute(query)
         return result.scalars().all()
-    
+
+    async def update_knowledge_item(
+        self,
+        item_id: int,
+        content: Optional[str] = None,
+        type: Optional[str] = None,
+        subtype: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+        confidence: Optional[float] = None
+    ) -> Optional[KnowledgeItem]:
+        """Update an existing knowledge item"""
+        item = await self.get_knowledge_item(item_id)
+        if not item:
+            return None
+
+        if content is not None:
+            item.content = content
+        if type is not None:
+            item.type = type
+        if subtype is not None:
+            item.subtype = subtype
+        if tags is not None:
+            item.tags = tags
+        if metadata is not None:
+            item.metadata = metadata
+        if confidence is not None:
+            item.confidence = confidence
+
+        self.db.commit()
+        self.db.refresh(item)
+
+        # Update embedding in vector DB
+        if content is not None:
+            await self._update_vector_store(item)
+
+        return item
+
+    async def _update_vector_store(self, item: KnowledgeItem) -> None:
+        """Update knowledge item in vector store"""
+        if not item.embedding_id:
+            return
+
+        # Prepare metadata for vector store
+        metadata = {
+            "id": item.id,
+            "type": item.type,
+            "subtype": item.subtype,
+            "source_type": item.source_type,
+            "source_identifier": item.source_identifier,
+            "tags": json.dumps(item.tags),
+            "confidence": item.confidence,
+            "created_at": item.created_at.isoformat()
+        }
+
+        # Update in vector store
+        await self.vector_store.add_documents(
+            self.collection_name,
+            [
+                {
+                    "id": item.embedding_id,
+                    "text": item.content,
+                    "metadata": metadata
+                }
+            ]
+        )
+
+    async def delete_knowledge_item(self, item_id: int) -> bool:
+        """Delete a knowledge item"""
+        item = await self.get_knowledge_item(item_id)
+        if not item:
+            return False
+
+        self.db.delete(item)
+        self.db.commit()
+
+        # Delete from vector DB
+        if item.embedding_id:
+            await self.vector_store.delete_documents(self.collection_name, [item.embedding_id])
+
+        return True
+
     async def extract_knowledge_from_text(
         self,
         content: str,

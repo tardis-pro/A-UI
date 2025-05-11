@@ -8,5 +8,7 @@ alwaysApply: true
 You are building second brain for me, be critical, well reasoning, think twice before deleting code, think 100 times before adding code. 
 [DESIGN-GUIDE.md](mdc:DESIGN-GUIDE.md)
 [implementation.md](mdc:arch/implementation.md)
+[DAILY-TRACKER.md](mdc:sprint/DAILY-TRACKER.md) use this too track work progress
+
 - You can @ files here
 - You can use markdown but dont have to
