@@ -10,26 +10,28 @@ import cognee
 from cognee.modules.search.types import SearchType
 from cognee.api.v1.visualize.visualize import visualize_graph
 
+import litellm
+litellm._turn_on_debug()
 
 async def setup_neo4j(neo4j_uri, neo4j_user, neo4j_password, api_key):
     """Configure Neo4j connection."""
     # Set API key
     cognee.config.graph_db_provider = "neo4j"
-    cognee.config.graph_db_uri = neo4j_uri
-    cognee.config.graph_db_username = "neo4j"
-    cognee.config.graph_db_password = "neo4jneo4j"
-    cognee.config.embedding_dimensions = 768
-    cognee.config.default_summary_model = "gemma3:12b"
-    cognee.config.ollama_base_url = "http://192.168.1.3:11434/v1"
-    cognee.config.ollama_summary_model = "gemma3:12b"
-    cognee.config.default_embedding_model = "bge-m3:567m"
-    cognee.config.huggingface_tokenizer = "sentence-transformers/all-MiniLM-L6-v2"
-    cognee.config.embedding_endpoint = "http://192.168.1.3:11434/api/embeddings"
-    cognee.config.llm_provider = "ollama"
+    # cognee.config.graph_db_uri = neo4j_uri
+    # cognee.config.graph_db_username = "neo4j"
+    # cognee.config.graph_db_password = "neo4jneo4j"
+    # cognee.config.embedding_dimensions = 768
+    # cognee.config.default_summary_model = "gemma3:12b"
+    # cognee.config.ollama_base_url = "http://192.168.1.3:11434/v1"
+    # cognee.config.ollama_summary_model = "gemma3:12b"
+    # cognee.config.default_embedding_model = "bge-m3:567m"
+    # cognee.config.huggingface_tokenizer = "sentence-transformers/all-MiniLM-L6-v2"
+    # cognee.config.embedding_endpoint = "http://192.168.1.3:11434/api/embeddings"
+    # cognee.config.llm_provider = "ollama"
     
     # Reset state
-    await cognee.prune.prune_data()
-    await cognee.prune.prune_system(metadata=True)
+    # await cognee.prune.prune_data()
+    # await cognee.prune.prune_system(metadata=True)
     logging.info("Neo4j configuration complete")
 
 
@@ -95,12 +97,12 @@ async def main(folder_path, neo4j_uri, neo4j_user, neo4j_password, output_dir, a
         await process_markdown(folder_path)
         
         # 3. Extract insights
-        await extract_insights(output_dir)
+        # await extract_insights(output_dir)
         
         # 4. Generate visualization
-        vis_path = os.path.join(output_dir, "knowledge_graph.html")
-        await visualize_graph(vis_path)
-        logging.info(f"Visualization saved to {vis_path}")
+        # vis_path = os.path.join(output_dir, "knowledge_graph.html")
+        # await visualize_graph(vis_path)
+        # logging.info(f"Visualization saved to {vis_path}")
         
     except Exception as e:
         logging.error(f"Error: {str(e)}")
