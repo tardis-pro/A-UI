@@ -8,6 +8,7 @@ export interface ApiState {
     lastSync: string | null;
     retryCount: { [key: string]: number };
     pendingRequests: string[];
+    chatMessages?: any[];
 }
 
 const initialState: ApiState = {
@@ -56,6 +57,12 @@ const apiSlice = createSlice({
         clearErrors: (state) => {
             state.errors = {};
         },
+        addChatMessage: (state, action: PayloadAction<any>) => {
+            if (!state.chatMessages) {
+                state.chatMessages = [];
+            }
+            state.chatMessages.push(action.payload);
+        }
     },
 });
 
@@ -63,6 +70,7 @@ export const {
     setApiConnection,
     setWsConnection,
     setLoading,
+    addChatMessage,
     setError,
     incrementRetry,
     updateLastSync,

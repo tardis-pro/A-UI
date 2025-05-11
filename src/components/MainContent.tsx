@@ -4,6 +4,8 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import ActivityFeed from './ActivityFeed';
+import NotificationList from './NotificationList';
 
 const MainContainer = styled(Box)({
   flex: 1,
@@ -99,6 +101,12 @@ const commandData = [
   { name: 'jest', value: 5 },
 ];
 
+const initialActivities = [
+  { id: 1, message: 'User A created a new project', timestamp: '2024-01-01T12:00:00.000Z' },
+  { id: 2, message: 'User B commented on a task', timestamp: '2024-01-01T12:30:00.000Z' },
+  { id: 3, message: 'User C completed a sprint', timestamp: '2024-01-01T13:00:00.000Z' },
+];
+
 const MainContent: React.FC = () => {
   return (
     <MainContainer>
@@ -190,8 +198,14 @@ const MainContent: React.FC = () => {
           </ResponsiveContainer>
         </Box>
       </ContentSection>
+      <ContentSection>
+        <ActivityFeed initialActivities={initialActivities} />
+      </ContentSection>
+      <ContentSection>
+        <NotificationList />
+      </ContentSection>
     </MainContainer>
   );
 };
 
-export default MainContent; 
+export default MainContent;

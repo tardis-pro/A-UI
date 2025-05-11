@@ -1,29 +1,30 @@
 from typing import List, Optional
 from datetime import datetime
-from pydantic import BaseModel, Field
+from sqlalchemy import Column, String, DateTime, Text, Integer, ForeignKey
+from sqlalchemy.orm import relationship
+from .base import Base
 
-class Message(BaseModel):
-    """Message model for chat requests and responses."""
-    content: str = Field(..., description="The content of the message")
-    timestamp: datetime = Field(default_factory=datetime.utcnow, description="Timestamp of the message")
-    role: str = Field(..., description="Role of the message sender (user or assistant)")
+class ChatMessage(Base):
+    """Model for storing chat messages."""
+    __tablename__ = "chat_message"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(String, nullable=False)
+    message = Column(Text, nullable=False)
+    response = Column(Text, nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    conversation_id = Column(String, ForeignKey("conversation.id"), nullable=False)
 
-class ChatRequest(BaseModel):
-    """Request model for chat messages."""
-    message: str = Field(..., min_length=1, description="User's message content")
-
-class ChatResponse(BaseModel):
-    """Response model for chat messages."""
-    response: Message = Field(..., description="Assistant's response message")
-    conversation_id: str = Field(..., description="Unique identifier for the conversation")
-
-class Conversation(BaseModel):
+class Conversation(Base):
     """Model for storing conversation history."""
-    id: str = Field(..., description="Unique identifier for the conversation")
-    messages: List[Message] = Field(default_factory=list, description="List of messages in the conversation")
-    created_at: datetime = Field(default_factory=datetime.utcnow, description="Creation timestamp")
-    updated_at: datetime = Field(default_factory=datetime.utcnow, description="Last update timestamp")
+    __tablename__ = "conversation"
+    id = Column(String, primary_key=True, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+    messages = relationship("ChatMessage", backref="conversation")
 
-class ConversationResponse(BaseModel):
+class ConversationResponse(Base):
     """Response model for conversation retrieval."""
-    conversation: Optional[Conversation] = Field(None, description="Current active conversation or None if no active conversation")
+    __tablename__ = "conversation_response"
+    id = Column(Integer, primary_key=True, index=True)
+    conversation = Column(Text, nullable=True)
+    

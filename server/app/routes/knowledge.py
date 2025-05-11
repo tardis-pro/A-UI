@@ -28,7 +28,8 @@ def get_knowledge_service(
 async def create_knowledge_item(
     request: KnowledgeItemCreateRequest,
     service: KnowledgeService = Depends(get_knowledge_service),
-    _: dict = Depends(get_current_user)
+    _: dict = Depends(get_current_user),
+    user_id: int = Depends(get_user_id)
 ):
     """Create a new knowledge item"""
     item = await service.create_knowledge_item(
@@ -62,6 +63,7 @@ async def create_knowledge_item(
         created_at=item.created_at,
         updated_at=item.updated_at
     )
+    await create_notification(user_id=user_id, message="New knowledge item created")
 
 @router.get("/items/{item_id}", response_model=KnowledgeItemResponse)
 async def get_knowledge_item(
@@ -185,7 +187,8 @@ async def search_knowledge(
 async def create_knowledge_relation(
     request: KnowledgeRelationRequest,
     service: KnowledgeService = Depends(get_knowledge_service),
-    _: dict = Depends(get_current_user)
+    _: dict = Depends(get_current_user),
+    user_id: int = Depends(get_user_id)
 ):
     """Create a relationship between knowledge items"""
     await service.create_knowledge_relations(
@@ -200,6 +203,7 @@ async def create_knowledge_relation(
         ]
     )
     
+    await create_notification(user_id=user_id, message="New knowledge relation created")
     return {"message": "Relation created successfully"}
 
 @router.post("/entity-links", status_code=201)
@@ -368,3 +372,22 @@ async def extract_knowledge_from_conversation(
         )
     
     return result_items 
+from typing import List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from fastapi.encoders import jsonable_encoder
+from pydantic import BaseModel
+
+from server.app.models.knowledge import (
+    KnowledgeItem,
+    KnowledgeItemCreateRequest,
+    KnowledgeItemModel,
+    KnowledgeRelationRequest,
+)
+from server.app.services import knowledge as service
+from server.app.dependencies import get_user_id
+from server.app.core.auth import get_current_active_user
+from server.app.db.session import get_db  # Import the get_db function
+from server.app.core.notifications import create_notification # Import the create_notification function
+
+router = APIRouter()

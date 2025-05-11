@@ -207,3 +207,28 @@ class ProgressManager:
 
 # Global progress manager instance
 progress_manager = ProgressManager() 
+from typing import Any, Dict, List, Optional
+
+from fastapi import WebSocket
+from loguru import logger
+from sse_starlette.sse import EventSourceResponse
+
+from server.app.core.websocket import connection_manager, sse_manager
+from server.app.models.notification import Notification
+from server.app.db.session import get_db
+from server.app.models.user import User  # Import the User model
+from server.app.core.auth import get_current_active_user # Import the get_current_active_user function
+
+async def create_notification(user_id: int, message: str):
+    """Creates a new notification and sends it to the user via WebSocket."""
+    try:
+        db = await get_db()
+        notification = Notification(user_id=user_id, message=message)
+        db.add(notification)
+        await db.commit()
+        await db.refresh(notification)
+
+        # Send the notification to the user via WebSocket
+        await connection_manager.send_to_channel(str(user_id), {"type": "notification", "payload": {"message": notification.message, "timestamp": notification.timestamp}})
+    except Exception as e:
+        logger.error(f"Error creating notification: {e}")

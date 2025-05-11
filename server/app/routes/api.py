@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 from typing import Dict, Any, List
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 
 router = APIRouter(prefix="/api", tags=["api"])
 
@@ -109,7 +109,6 @@ async def get_command_history(limit: int = 10) -> List[str]:
     return history
 
 
-from fastapi import Depends
 from ..services.knowledge import KnowledgeService
 from ..models.knowledge import KnowledgeSearchRequest, KnowledgeSearchResponse, KnowledgeItem
 from sqlalchemy.orm import Session
@@ -164,3 +163,165 @@ async def execute_command_history(
         return {"result": stdout.decode(), "error": stderr.decode()}
     except Exception as e:
         return {"error": str(e)}
+
+from ..services.CommandTemplateService import CommandTemplateService
+from ..models.command_template import CommandTemplate
+
+@router.post("/command_templates", response_model=CommandTemplate)
+async def create_command_template(
+    name: str,
+    template: str,
+    user_id: int,
+    command_template_service: CommandTemplateService = Depends()
+) -> CommandTemplate:
+    """
+    Create a new command template
+    """
+    return command_template_service.create_template(name=name, template=template, user_id=user_id)
+
+
+@router.get("/command_templates/{template_id}", response_model=CommandTemplate)
+async def get_command_template(
+    template_id: int,
+    user_id: int,
+    command_template_service: CommandTemplateService = Depends()
+) -> CommandTemplate:
+    """
+    Get a command template by ID
+    """
+    return command_template_service.get_template(template_id=template_id, user_id=user_id)
+
+
+@router.get("/command_templates", response_model=List[CommandTemplate])
+async def get_command_templates(
+    user_id: int,
+    skip: int = 0,
+    limit: int = 100,
+    command_template_service: CommandTemplateService = Depends()
+) -> List[CommandTemplate]:
+    """
+    Get all command templates for a user
+    """
+    return command_template_service.get_templates(user_id=user_id, skip=skip, limit=limit)
+
+
+@router.put("/command_templates/{template_id}", response_model=CommandTemplate)
+async def update_command_template(
+    template_id: int,
+    name: str,
+    template: str,
+    user_id: int,
+    command_template_service: CommandTemplateService = Depends()
+) -> CommandTemplate:
+    """
+    Update an existing command template
+    """
+    return command_template_service.update_template(template_id=template_id, name=name, template=template, user_id=user_id)
+
+
+@router.delete("/command_templates/{template_id}")
+async def delete_command_template(
+    template_id: int,
+    user_id: int,
+    command_template_service: CommandTemplateService = Depends()
+) -> Dict[str, str]:
+    """
+    Delete a command template
+    """
+    command_template_service.delete_template(template_id=template_id, user_id=user_id)
+    return {"message": "Command template deleted successfully"}
+
+
+from ..services.CommandSchedulerService import CommandSchedulerService
+from ..models.command_schedule import CommandSchedule
+
+@router.post("/command_schedules", response_model=CommandSchedule)
+async def create_command_schedule(
+    command: str,
+    schedule: str,
+    user_id: int,
+    command_scheduler_service: CommandSchedulerService = Depends()
+) -> CommandSchedule:
+    """
+    Create a new command schedule
+    """
+    return command_scheduler_service.create_schedule(command=command, schedule=schedule, user_id=user_id)
+
+
+@router.get("/command_schedules/{schedule_id}", response_model=CommandSchedule)
+async def get_command_schedule(
+    schedule_id: int,
+    user_id: int,
+    command_scheduler_service: CommandSchedulerService = Depends()
+) -> CommandSchedule:
+    """
+    Get a command schedule by ID
+    """
+    return command_scheduler_service.get_schedule(schedule_id=schedule_id, user_id=user_id)
+
+
+@router.get("/command_schedules", response_model=List[CommandSchedule])
+async def get_command_schedules(
+    user_id: int,
+    skip: int = 0,
+    limit: int = 100,
+    command_scheduler_service: CommandSchedulerService = Depends()
+) -> List[CommandSchedule]:
+    """
+    Get all command schedules for a user
+    """
+    return command_scheduler_service.get_schedules(user_id=user_id, skip=skip, limit=limit)
+
+
+@router.put("/command_schedules/{schedule_id}", response_model=CommandSchedule)
+async def update_command_schedule(
+    schedule_id: int,
+    command: str,
+    schedule: str,
+    user_id: int,
+    command_scheduler_service: CommandSchedulerService = Depends()
+) -> CommandSchedule:
+    """
+    Update an existing command schedule
+    """
+    return command_scheduler_service.update_schedule(schedule_id=schedule_id, command=command, schedule=schedule, user_id=user_id)
+
+
+@router.delete("/command_schedules/{schedule_id}")
+async def delete_command_schedule(
+    schedule_id: int,
+    user_id: int,
+    command_scheduler_service: CommandSchedulerService = Depends()
+) -> Dict[str, str]:
+    """
+    Delete a command schedule
+    """
+    command_scheduler_service.delete_schedule(schedule_id=schedule_id, user_id=user_id)
+    return {"message": "Command schedule deleted successfully"}
+
+from ..services.CommandHistoryService import CommandHistoryService
+from ..models.command_history import CommandHistory
+
+@router.post("/command_history/{command_id}/share")
+async def share_command(
+    command_id: int,
+    command_history_service: CommandHistoryService = Depends()
+) -> Dict[str, str]:
+    """
+    Share a command
+    """
+    command = command_history_service.get_command(command_id)
+    if not command:
+        return {"error": "Command not found"}
+    command.is_shared = True
+    command_history_service.db.commit()
+    return {"message": "Command shared successfully"}
+
+@router.get("/command_history/shared")
+async def get_shared_commands(
+    command_history_service: CommandHistoryService = Depends()
+) -> List[CommandHistory]:
+    """
+    Get all shared commands
+    """
+    return command_history_service.get_shared_commands()

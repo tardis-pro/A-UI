@@ -11,7 +11,7 @@ from app.core.error_handlers import setup_error_handlers
 from app.core.monitoring import setup_monitoring
 from app.core.websocket import setup_websocket
 from app.core.sse import setup_sse
-from app.routes import progress, api, knowledge, auth, chat
+from app.routes import progress, api, knowledge, auth, chat, code
 from app.config import get_settings
 
 # Configure logging
@@ -73,6 +73,9 @@ app.include_router(progress.router)
 app.include_router(api.router)
 app.include_router(knowledge.router)
 app.include_router(chat.router)
+# Command History routes
+# from app.routes import command_history
+# app.include_router(command_history.router)
 
 # Custom OpenAPI documentation
 @app.get("/docs", response_class=HTMLResponse)

@@ -1,6 +1,9 @@
 import { store } from '../state/store';
-import { setWsConnection } from '../state/slices/apiSlice';
-
+import { setWsConnection, addChatMessage } from '../state/slices/apiSlice';
+import apiReducer from '../state/slices/apiSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../state/store';
+import { addNotification } from '../state/slices/notificationSlice';
 export class WebSocketService {
     private ws: WebSocket | null = null;
     private reconnectAttempts = 0;
@@ -27,6 +30,25 @@ export class WebSocketService {
             console.log('WebSocket connected');
             store.dispatch(setWsConnection(true));
             this.reconnectAttempts = 0;
+
+            // Register message handler for chat messages
+            this.registerMessageHandler("chat_message", (data) => {
+                console.log("Received chat message:", data);
+                store.dispatch(addChatMessage(data));
+            });
+
+            // Register generic notification handler
+            this.registerMessageHandler("notification", (data) => {
+                console.log("Received notification:", data);
+                // Dispatch notification to Redux store
+                store.dispatch(addNotification(data));
+            });
+
+            // Register message handler for code completion events
+            this.registerMessageHandler("code_completion", (data) => {
+                console.log("Received code completion event:", data);
+                store.dispatch(addNotification(data));
+            });
         };
 
         this.ws.onclose = () => {
@@ -89,18 +111,19 @@ export class WebSocketService {
 
 // Create singleton instance
 export const wsService = new WebSocketService();
-
 // Export websocket hooks for React components
 export const useWebSocket = () => {
-    const isConnected = store.getState().api.wsConnected;
+    const isConnected = useSelector((state: RootState) => state.api.wsConnected);
+
 
     return {
         isConnected,
         connect: () => wsService.connect(),
         disconnect: () => wsService.disconnect(),
         send: (type: string, payload: any) => wsService.send(type, payload),
-        registerHandler: (type: string, handler: (data: any) => void) =>
-            wsService.registerMessageHandler(type, handler),
+        registerHandler: (type: string, handler: (data: any) => void) => {
+            wsService.registerMessageHandler(type, handler);
+        },
         unregisterHandler: (type: string) => wsService.unregisterMessageHandler(type),
     };
 };
