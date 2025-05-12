@@ -55,10 +55,10 @@
     - [ ] Code context sidebar integration
     - [ ] Graph visualization of code relationships
 - [ ] Syntax-aware search
-  - [ ] Language-specific DSPy agents
-  - [ ] LLM-based code understanding
-  - [ ] Query optimization using semantic search
-  - [ ] UI Components (designs/codbase.svg)
+  - [x] Language-specific DSPy agents
+  - [x] LLM-based code understanding
+  - [x] Query optimization using semantic search
+  - [x] UI Components (designs/codbase.svg) - Semantic relationship visualization requires further investigation
     - [ ] Syntax-aware highlighting in results
     - [ ] Code navigation controls
     - [ ] Semantic relationship visualization
