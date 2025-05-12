@@ -29,6 +29,7 @@ class CodeChunk(BaseModel):
     language: str
     metadata: CodeMetadata = Field(default_factory=CodeMetadata)
     embedding: Optional[List[float]] = None
+    ast: Optional[str] = None
     
 class CodeChunkRequest(BaseModel):
     """Request model for processing code files"""

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from typing import List, Dict, Any, Optional
 import os
+from ..services import code_tokenizer, code_embedding_generator, similarity_search, source_management
 
 from ..models.code import (
     CodeChunkRequest, 
@@ -13,6 +14,9 @@ from ..models.code import (
 from ..services.code_chunker import CodeChunkerService
 from ..services.vector_store import VectorStoreService
 from ..services.code_embedding import CodeEmbeddingService
+from ..services.code_tokenizer import tokenize_code
+from ..services.code_embedding_generator import CodeEmbeddingGenerator
+from ..services.similarity_search import find_similar_codes
 from ..core.cache import get_cache_manager
 
 router = APIRouter(prefix="/code", tags=["code"])
@@ -28,6 +32,9 @@ async def get_vector_store_service():
     
 async def get_code_embedding_service():
     return CodeEmbeddingService()
+
+async def get_code_embedding_generator():
+    return code_embedding_generator.CodeEmbeddingGenerator()
 
 @router.post("/process", response_model=CodeChunkResponse)
 async def process_code_files(
@@ -94,7 +101,7 @@ async def get_file_metadata(
 async def search_code(
     request: CodeSearchRequest,
     vector_store: VectorStoreService = Depends(get_vector_store_service),
-    embedding_service: CodeEmbeddingService = Depends(get_code_embedding_service),
+    code_embedding_generator: CodeEmbeddingGenerator = Depends(get_code_embedding_generator),
     cache_manager = Depends(get_cache_manager)
 ):
     """
@@ -102,30 +109,49 @@ async def search_code(
     
     This endpoint:
     1. Generates embeddings for the search query
-    2. Finds similar code chunks in the vector store
+    2. Finds similar code chunks using cosine similarity
     3. Returns ranked results with metadata
     """
-    # Check cache first
-    cache_key = f"code_search:{request.query}:{request.limit}:{hash(str(request.filters))}"
-    cached_result = await cache_manager.get(cache_key)
+    # Tokenize the query
+    query_tokens = tokenize_code(request.query)
     
-    if cached_result:
-        return cached_result
+    # Get all files in the project
+    all_files = await source_management.get_all_files()
     
-    # Generate embedding for query
-    query_embedding = await embedding_service.generate_embedding(request.query)
+    # Create a code chunk for each file
+    all_chunks = []
+    for file_path in all_files:
+        try:
+            # Check if the file is in the cache
+            cached_content = await cache_manager.get(file_path)
+            if cached_content:
+                content = cached_content
+            else:
+                # Check if the file is a binary file
+                if file_path.endswith((".png", ".jpg", ".jpeg", ".gif", ".bmp", ".pdf", ".ico")):
+                    print(f"Skipping binary file: {file_path}")
+                    continue
+                    
+                # Read the file contents
+                with open(file_path, "r") as f:
+                    content = f.read()
+                    
+                # Store the file contents in the cache
+                await cache_manager.set(file_path, content)
+                
+            chunk = CodeChunk(file_path=file_path, content=content)
+            all_chunks.append(chunk)
+        except Exception as e:
+            print(f"Error reading file {file_path}: {e}")
+            continue
     
-    # Perform semantic search
-    results = await vector_store.search_code_chunks(
-        query=request.query,
-        filters=request.filters,
-        limit=request.limit
-    )
+    # Find similar code chunks using AST-based search
+    top_indices, similarities = find_similar_codes(request.query, all_chunks, top_n=request.limit)
+    
+    # Prepare the results
+    results = [all_chunks[i] for i in top_indices]
     
     response = CodeSearchResponse(results=results, count=len(results))
-    
-    # Cache the result
-    await cache_manager.set(cache_key, response, expire=60*15)  # 15 minutes cache
     
     return response
 
@@ -184,3 +210,16 @@ async def get_code_stats(
     """Get statistics about indexed code"""
     stats = await vector_store.get_code_stats()
     return stats 
+from fastapi import APIRouter, HTTPException
+from server.app.services import create_python_agent
+
+router = APIRouter()
+
+@router.post("/analyze_code")
+async def analyze_code(code: str):
+    try:
+        agent = create_python_agent()
+        analysis = agent(code)
+        return {"analysis": analysis}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -44,20 +44,30 @@
 ### Planned Tasks
 1. Code Search
    - Implement semantic code search
-       - **Implementation Details:** Develop semantic understanding of code structure using vector embeddings
+       - **Implementation Details:** Develop semantic understanding of code structure using DSPy agents and LLM-based code analysis
        - **Required Components:** 
-           - Code tokenization engine
-           - Code embedding generation
+           - DSPy-based code analysis agent
+           - Code embedding generation using LLMs
            - Similarity search algorithm
-       - **Integration Point:** Code parsing service
+           - Graph-based code representation
+       - **Integration Point:** DSPy agent service
+       - **UI Components:** (Per designs/codbase.svg)
+           - Search input with syntax highlighting
+           - Results panel in main content area
+           - Code context sidebar integration
+           - Graph visualization of code relationships
        - **Status:** Not Started
    - Create syntax-aware search
-       - **Implementation Details:** Build search capability that understands programming syntax and structure
+       - **Implementation Details:** Build search capability using DSPy agents trained on programming language syntax
        - **Required Components:**
-           - Language-specific parsers
-           - AST-based search indices
-           - Query optimization
-       - **Integration Point:** Search index setup
+           - Language-specific DSPy agents
+           - LLM-based code understanding
+           - Query optimization using semantic search
+       - **Integration Point:** DSPy agent service
+       - **UI Components:** (Per designs/codbase.svg)
+           - Syntax-aware highlighting in results
+           - Code navigation controls
+           - Semantic relationship visualization
        - **Status:** Not Started
    - Add project-wide search capabilities
        - **Implementation Details:** Enable searching across multiple files and projects with context awareness
@@ -66,6 +76,9 @@
            - Multi-file search coordination
            - Result aggregation and ranking
        - **Integration Point:** Search index setup
+       - **UI Components:** (Per designs/codbase.svg)
+           - Project tree integration
+           - Multi-file result grouping
        - **Status:** Not Started
    - Develop Search UI components
        - **Implementation Details:** Create intuitive UI for entering and displaying search queries and results
@@ -73,6 +86,7 @@
            - Search input with syntax highlighting
            - Result display with code context
            - Filter and refinement controls
+       - **UI Design:** Follow the layout in designs/codbase.svg with main search area and context sidebar
        - **Status:** Not Started
 
 2. Code Assistant
@@ -82,6 +96,10 @@
            - Local context analyzer
            - Project-wide context analyzer
            - Completion ranking algorithm
+       - **UI Components:** (Per designs/codbase.svg)
+           - Code editor integration
+           - Suggestion list overlay
+           - Action buttons for applying suggestions
        - **Status:** Not Started
    - Implement error detection and resolution
        - **Implementation Details:** Build system to identify potential errors and suggest fixes
@@ -89,6 +107,9 @@
            - Static analysis integration
            - Common error pattern detection
            - Fix suggestion generation
+       - **UI Components:** (Per designs/codbase.svg)
+           - Error highlighting in editor
+           - Quick-fix suggestions panel
        - **Status:** Not Started
    - Add refactoring suggestions
        - **Implementation Details:** Develop capability to suggest code improvements and refactorings
@@ -96,6 +117,9 @@
            - Code quality analyzer
            - Refactoring pattern library
            - Before/after diff generation
+       - **UI Components:** (Per designs/codbase.svg)
+           - Refactoring suggestions panel
+           - Before/after diff view
        - **Status:** Not Started
    - Develop documentation generation
        - **Implementation Details:** Create system to automatically generate documentation from code
@@ -103,6 +127,9 @@
            - Code structure analyzer
            - Documentation template engine
            - Natural language generation
+       - **UI Components:** (Per designs/kb.svg)
+           - Documentation preview panel
+           - Template selection controls
        - **Status:** Not Started
 
 3. Code Navigation
@@ -112,6 +139,9 @@
            - Symbol extraction service
            - Reference tracking index
            - Navigation UI controls
+       - **UI Components:** (Per designs/codbase.svg)
+           - Symbol tree view in sidebar
+           - Jump-to-definition controls
        - **Status:** Not Started
    - Create call hierarchy visualization
        - **Implementation Details:** Visualize function call relationships and dependencies
@@ -119,6 +149,9 @@
            - Call graph generator
            - Hierarchical visualization component
            - Interactive navigation controls
+       - **UI Components:** (Per designs/codbase.svg)
+           - Call graph visualization panel
+           - Interactive node exploration
        - **Status:** Not Started
    - Add type hierarchy navigation
        - **Implementation Details:** Enable navigation through inheritance and type relationships
@@ -126,6 +159,9 @@
            - Type analyzer
            - Inheritance tracker
            - Type relationship visualizer
+       - **UI Components:** (Per designs/codbase.svg)
+           - Type hierarchy tree view
+           - Inheritance visualization
        - **Status:** Not Started
    - Implement jump-to-definition functionality
        - **Implementation Details:** Enable quick navigation to symbol definitions
@@ -133,6 +169,9 @@
            - Symbol resolution service
            - Navigation history tracker
            - UI integration with editor
+       - **UI Components:** (Per designs/codbase.svg)
+           - Definition preview popup
+           - Navigation history controls
        - **Status:** Not Started
 
 4. Context Management
@@ -142,6 +181,9 @@
            - Workspace state service
            - Context serialization
            - State restoration logic
+       - **UI Components:** (Per designs/codbase.svg and designs/kb.svg)
+           - Context panel in right sidebar
+           - Current context display
        - **Status:** Not Started
    - Create context-aware suggestions
        - **Implementation Details:** Provide suggestions based on current working context
@@ -149,6 +191,9 @@
            - Context analyzer
            - Relevance ranking algorithm
            - Suggestion presentation UI
+       - **UI Components:** (Per designs/codbase.svg)
+           - Context-aware suggestion panel
+           - Relevance indicators
        - **Status:** Not Started
    - Implement context sharing
        - **Implementation Details:** Allow sharing of working context between team members
@@ -156,12 +201,18 @@
            - Context export functionality
            - Context import functionality
            - Access control system
+       - **UI Components:** (Per designs/kb.svg)
+           - Context sharing controls
+           - Access management panel
        - **Status:** Not Started
    - Add context visualization
        - **Implementation Details:** Visualize the current context and relationships
        - **Required Components:**
            - Context graph builder
            - Interactive visualization component
+           - Filter and focus controls
+       - **UI Components:** (Per designs/kb.svg)
+           - Context graph visualization
            - Filter and focus controls
        - **Status:** Not Started
 
@@ -170,15 +221,19 @@
    - Create CodeSearchService
      - Responsible for: Code tokenization, embedding generation, search functionality
      - Integration with: Knowledge Graph system
+     - Design Alignment: Support the UI components shown in designs/codbase.svg
    - Create CodeAssistantService
      - Responsible for: Code completion, analysis, refactoring
      - Integration with: Local models, editor components
+     - Design Alignment: Support the AI-powered assistance shown in designs/codbase.svg
    - Create CodeNavigationService
      - Responsible for: Symbol extraction, reference tracking, navigation controls
      - Integration with: Navigation tree management
+     - Design Alignment: Support the navigation UI shown in designs/codbase.svg
    - Create ContextManagementService
      - Responsible for: Context persistence, sharing, visualization
      - Integration with: Knowledge Graph system
+     - Design Alignment: Support the context panels shown in designs/codbase.svg and designs/kb.svg
    - **Status:** Not Started
 
 2. Database Schema Updates

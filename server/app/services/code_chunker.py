@@ -33,7 +33,9 @@ class CodeChunk(BaseModel):
     line_end: int
     language: str
     metadata: CodeMetadata = CodeMetadata()
-
+    embedding: Optional[List[float]] = None
+    ast: Optional[str] = None
+    
 class CodeChunkerService:
     """Service for extracting code chunks and metadata from source code files"""
     
@@ -250,16 +252,22 @@ class CodeChunkerService:
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-                
-            tree = ast.parse(content)
-            for node in ast.walk(tree):
+            
+            from tree_sitter import Parser
+            
+            parser = Parser()
+            parser.set_language("python")
+            tree = parser.parse(bytes(content, "utf8"))
+            root_node = tree.root_node
+
+            for node in root_node.children:
                 chunk_id = f"{file_path}:{id(node)}"
                 
-                if isinstance(node, ast.ClassDef):
+                if node.type == "class_definition":
                     # Extract class definition
-                    start_line = node.lineno
-                    end_line = node.end_lineno if hasattr(node, 'end_lineno') else start_line
-                    class_content = '\n'.join(content.split('\n')[start_line-1:end_line])
+                    start_line = node.start_point[0] + 1
+                    end_line = node.end_point[0] + 1
+                    class_content = '\\n'.join(content.split('\\n')[start_line-1:end_line])
                     
                     # Extract docstring
                     docstring = ast.get_docstring(node)
@@ -275,14 +283,15 @@ class CodeChunkerService:
                         metadata=CodeMetadata(
                             name=node.name,
                             documentation=docstring
-                        )
+                        ),
+                        ast=str(node.sexp())  # Store AST as string
                     ))
                     
-                elif isinstance(node, ast.FunctionDef):
+                elif node.type == "function_definition":
                     # Extract function definition
-                    start_line = node.lineno
+                    start_line = node.start_point[0] + 1
                     end_line = node.end_lineno if hasattr(node, 'end_lineno') else start_line
-                    func_content = '\n'.join(content.split('\n')[start_line-1:end_line])
+                    func_content = '\\n'.join(content.split('\\n')[start_line-1:end_line])
                     
                     # Extract docstring
                     docstring = ast.get_docstring(node)
@@ -298,135 +307,84 @@ class CodeChunkerService:
                         metadata=CodeMetadata(
                             name=node.name,
                             documentation=docstring
-                        )
+                        ),
+                        ast=str(node.sexp())
                     ))
+                    
         except Exception as e:
-            print(f"Error processing Python file {file_path}: {e}")
+            print(f"Error processing file: {file_path} - {e}")
             
         return chunks
-    
+
     async def _process_js_file(self, file_path: str) -> List[CodeChunk]:
         """Process JavaScript/TypeScript file to extract code chunks"""
-        # This would use a JavaScript parser or regex-based extraction
-        # For now, implementing a simple regex-based approach
         chunks = []
         
         try:
+            from tree_sitter import Parser
+            
+            parser = Parser()
+            parser.set_language("javascript")
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-                
-            # Function patterns (both regular and arrow functions)
-            function_patterns = [
-                r'function\s+(\w+)\s*\([^)]*\)\s*{',  # Regular function
-                r'(?:const|let|var)\s+(\w+)\s*=\s*function\s*\([^)]*\)\s*{',  # Function expression
-                r'(?:const|let|var)\s+(\w+)\s*=\s*\([^)]*\)\s*=>\s*{',  # Arrow function with block
-                r'(?:const|let|var)\s+(\w+)\s*=\s*\([^)]*\)\s*=>'  # Arrow function expression
-            ]
+            tree = parser.parse(bytes(content, "utf8"))
+            root_node = tree.root_node
             
-            # Class pattern
-            class_pattern = r'class\s+(\w+)(?:\s+extends\s+\w+)?\s*{'
-            
-            # Process functions
-            for pattern in function_patterns:
-                for match in re.finditer(pattern, content):
-                    func_name = match.group(1)
-                    start_pos = match.start()
+            def traverse_tree(node, chunks):
+                if node.type == "class_declaration":
+                    class_name = node.children[1].text.decode()
+                    start_line = node.start_point[0] + 1
+                    end_line = node.end_point[0] + 1
+                    class_content = content.splitlines()[start_line - 1:end_line]
+                    class_content = "\\n".join(class_content)
                     
-                    # Find end of function (this is a simplistic approach)
-                    if '{' in match.group(0):
-                        # For functions with blocks, find matching closing brace
-                        brace_count = 1
-                        end_pos = start_pos + match.group(0).index('{') + 1
-                        
-                        while brace_count > 0 and end_pos < len(content):
-                            if content[end_pos] == '{':
-                                brace_count += 1
-                            elif content[end_pos] == '}':
-                                brace_count -= 1
-                            end_pos += 1
-                    else:
-                        # For arrow functions without blocks, find end of statement
-                        end_pos = content.find('\n', start_pos)
-                        if end_pos == -1:
-                            end_pos = len(content)
+                    chunk_id = f"{file_path}:{start_line}"
+                    chunk = CodeChunk(
+                        id=chunk_id,
+                        content=class_content,
+                        type="class",
+                        file_path=file_path,
+                        line_start=start_line,
+                        line_end=end_line,
+                        language="javascript",
+                        metadata=CodeMetadata(name=class_name),
+                        ast=str(node.sexp())
+                    )
+                    chunks.append(chunk)
                     
-                    # Calculate line numbers
-                    start_line = content[:start_pos].count('\n') + 1
-                    end_line = content[:end_pos].count('\n') + 1
+                elif node.type == "function_declaration":
+                    func_name = node.children[1].text.decode()
+                    start_line = node.start_point[0] + 1
+                    end_line = node.end_point[0] + 1
+                    func_content = content.splitlines()[start_line - 1:end_line]
+                    func_content = "\\n".join(func_content)
                     
-                    # Extract function content
-                    func_content = content[start_pos:end_pos]
-                    
-                    # Extract JSDoc comment if present
-                    comment = ""
-                    comment_end = start_pos
-                    comment_start = content.rfind('/**', 0, start_pos)
-                    if comment_start != -1 and content.find('*/', comment_start, start_pos) != -1:
-                        comment = content[comment_start:content.find('*/', comment_start, start_pos) + 2]
-                    
-                    chunks.append(CodeChunk(
-                        id=f"{file_path}:{start_line}-{end_line}",
+                    chunk_id = f"{file_path}:{start_line}"
+                    chunk = CodeChunk(
+                        id=chunk_id,
                         content=func_content,
                         type="function",
                         file_path=file_path,
                         line_start=start_line,
                         line_end=end_line,
-                        language="javascript" if file_path.endswith(('.js', '.jsx')) else "typescript",
-                        metadata=CodeMetadata(
-                            name=func_name,
-                            documentation=comment
-                        )
-                    ))
-            
-            # Process classes
-            for match in re.finditer(class_pattern, content):
-                class_name = match.group(1)
-                start_pos = match.start()
-                
-                # Find end of class by matching braces
-                brace_count = 1
-                end_pos = start_pos + match.group(0).index('{') + 1
-                
-                while brace_count > 0 and end_pos < len(content):
-                    if content[end_pos] == '{':
-                        brace_count += 1
-                    elif content[end_pos] == '}':
-                        brace_count -= 1
-                    end_pos += 1
-                
-                # Calculate line numbers
-                start_line = content[:start_pos].count('\n') + 1
-                end_line = content[:end_pos].count('\n') + 1
-                
-                # Extract class content
-                class_content = content[start_pos:end_pos]
-                
-                # Extract JSDoc comment if present
-                comment = ""
-                comment_end = start_pos
-                comment_start = content.rfind('/**', 0, start_pos)
-                if comment_start != -1 and content.find('*/', comment_start, start_pos) != -1:
-                    comment = content[comment_start:content.find('*/', comment_start, start_pos) + 2]
-                
-                chunks.append(CodeChunk(
-                    id=f"{file_path}:{start_line}-{end_line}",
-                    content=class_content,
-                    type="class",
-                    file_path=file_path,
-                    line_start=start_line,
-                    line_end=end_line,
-                    language="javascript" if file_path.endswith(('.js', '.jsx')) else "typescript",
-                    metadata=CodeMetadata(
-                        name=class_name,
-                        documentation=comment
+                        language="javascript",
+                        metadata=CodeMetadata(name=func_name),
+                        ast=str(node.sexp())
                     )
-                ))
+                    chunks.append(chunk)
+                    
+                for child in node.children:
+                    traverse_tree(child, chunks)
+            
+            traverse_tree(root_node, chunks)
         
+        except FileNotFoundError:
+            print(f"File not found: {file_path}")
         except Exception as e:
-            print(f"Error processing JS/TS file {file_path}: {e}")
+            print(f"Error processing file: {file_path} - {e}")
             
         return chunks
-    
+
     async def _process_generic_file(self, file_path: str, language: str) -> List[CodeChunk]:
         """Process any supported file to extract basic code chunks"""
         chunks = []
@@ -434,22 +392,20 @@ class CodeChunkerService:
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
-            # For now, just create a single chunk for the entire file
-            chunks.append(CodeChunk(
+                
+            # Split the content into lines and create a single code chunk
+            lines = content.splitlines()
+            chunk = CodeChunk(
                 id=file_path,
                 content=content,
                 type="file",
                 file_path=file_path,
                 line_start=1,
-                line_end=content.count('\n') + 1,
-                language=language,
-                metadata=CodeMetadata(
-                    name=os.path.basename(file_path)
-                )
-            ))
-            
+                line_end=len(lines),
+                language=language
+            )
+            chunks.append(chunk)
         except Exception as e:
-            print(f"Error processing file {file_path}: {e}")
+            print(f"Error processing file: {file_path} - {e}")
             
-        return chunks 
+        return chunks

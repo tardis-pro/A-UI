@@ -15,6 +15,7 @@ import {
   LayoutProvider,
   Sidebar,
 } from './components/layout';
+import CodeSearch from './components/CodeSearch/CodeSearch';
 import { createAppTheme } from './theme/index';
 import {
   NavigationProvider,
@@ -101,6 +102,7 @@ const App: React.FC = () => {
               <Layout>
                 <NavigationShortcuts />
                 <ThemeToggle />
+                <CodeSearch />
                 <RightSidebar />
               </Layout>
             </LayoutProvider>

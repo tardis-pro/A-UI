@@ -325,3 +325,12 @@ async def get_shared_commands(
     Get all shared commands
     """
     return command_history_service.get_shared_commands()
+from fastapi import APIRouter
+from server.app.routes import auth, chat, knowledge, progress, code
+
+router = APIRouter()
+router.include_router(auth.router, prefix="/auth", tags=["auth"])
+router.include_router(chat.router, prefix="/chat", tags=["chat"])
+router.include_router(knowledge.router, prefix="/knowledge", tags=["knowledge"])
+router.include_router(progress.router, prefix="/progress", tags=["progress"])
+router.include_router(code.router, prefix="/code", tags=["code"])

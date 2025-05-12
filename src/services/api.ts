@@ -213,6 +213,16 @@ export async function getConversation(): Promise<Conversation | null> {
     );
 }
 
+export async function searchCode(query: string, language?: string): Promise<any[]> {
+    return withLoadingState(
+        'searchCode',
+        async () => {
+            const response = await api.get<any[]>(`/code_search?query=${query}${language ? `&language=${language}` : ''}`);
+            return response.data;
+        },
+        'Failed to fetch code search results'
+    );
+}
 // Clear cache when needed (e.g., after mutations)
 export function clearApiCache(): void {
     cache.clear();
