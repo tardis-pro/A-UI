@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - model-cache:/app/.cache/huggingface
+    environment:
+      - ENVIRONMENT=development
+      - USE_GPU=1
+      - MAX_WORKERS=1
+      - LOG_LEVEL=debug
+      - MODEL_PATH=huggingface/mistral-7b-instruct
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    depends_on:
+      - vectordb
+
+  vectordb:
+    image: chromadb/chroma:latest
+    volumes:
+      - vectordb-data:/chroma/data
+    ports:
+      - "8001:8000"
+    environment:
+      - CHROMA_SERVER_AUTH_CREDENTIALS_FILE=/chroma/data/auth.json
+      - CHROMA_SERVER_AUTH_CREDENTIALS_PROVIDER=chromadb.auth.token.TokenAuthServerProvider
+      - ALLOW_RESET=true
+
+volumes:
+  model-cache:
+    driver: local
+  vectordb-data:
+    driver: local
+
+networks:
+  default:
+    name: aui-network
+    driver: bridge

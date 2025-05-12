@@ -1,4 +1,5 @@
 import React from 'react';
+import ActivityFeed from './ActivityFeed';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -179,6 +180,12 @@ const RightSidebar: React.FC = () => {
             </Typography>
           </Box>
         </Paper>
+      </Box>
+      <Box>
+        <Typography variant="h6" sx={{ color: '#CDD6F4', mb: 2 }}>
+          Activity Feed
+        </Typography>
+        <ActivityFeed initialActivities={[]} />
       </Box>
     </RightSidebarContainer>
   );

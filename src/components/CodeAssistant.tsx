@@ -155,21 +155,53 @@ const demoConversation = [
   }
 ];
 
+interface Message {
+  type: 'user' | 'assistant';
+  message: string;
+  code?: string;
+  bulletPoints?: string[];
+}
+
 const CodeAssistant: React.FC = () => {
-  const [messages, setMessages] = useState(demoConversation.slice(0, 1));
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
-  useEffect(() => {
-    if (messages.length < demoConversation.length) {
-      setIsTyping(true);
-      const timer = setTimeout(() => {
-        setMessages(prev => [...prev, demoConversation[prev.length]]);
-        setIsTyping(false);
-      }, 1000);
-      return () => clearTimeout(timer);
+  const handleSendMessage = async () => {
+    setIsTyping(true);
+    try {
+      const response = await fetch('/api/code/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: inputValue }),
+      });
+      const data = await response.json();
+      if (data.results && data.results.length > 0 && data.results[0].content) {
+        setMessages(prev => [...prev, { type: 'user', message: inputValue }, { type: 'assistant', message: data.results[0].content }]);
+      } else {
+        setMessages(prev => [...prev, { type: 'user', message: inputValue }, { type: 'assistant', message: 'No results found.' }]);
+      }
+    } catch (error) {
+      console.error('Error searching code:', error);
+      setMessages(prev => [...prev, { type: 'user', message: inputValue }, { type: 'assistant', message: 'Error searching code.' }]);
+    } finally {
+      setIsTyping(false);
+      setInputValue('');
     }
-  }, [messages]);
+  };
+
+  // useEffect(() => {
+  //   if (messages.length < demoConversation.length) {
+  //     setIsTyping(true);
+  //     const timer = setTimeout(() => {
+  //       setMessages(prev => [...prev, demoConversation[prev.length]]);
+  //       setIsTyping(false);
+  //     }, 1000);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [messages]);
 
   return (
     <Box sx={{ p: 4 }}>
@@ -275,6 +307,11 @@ const CodeAssistant: React.FC = () => {
             onChange={(e) => setInputValue(e.target.value)}
             variant="outlined"
             size="small"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSendMessage();
+              }
+            }}
           />
         </InputContainer>
       </CodeWindow>

@@ -136,4 +136,14 @@ class SourceManagementService:
             
     def close(self):
         """Close the Neo4j driver connection"""
-        self.driver.close() 
+        self.driver.close()
+
+import os
+
+async def get_all_files(path: str = ".") -> List[str]:
+    """Get a list of all files in the project"""
+    all_files = []
+    for root, _, files in os.walk(path):
+        for file in files:
+            all_files.append(os.path.join(root, file))
+    return all_files

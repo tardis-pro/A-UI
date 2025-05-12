@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Box, Typography, Paper, Chip, IconButton, LinearProgress } from '@mui/material';
+import { Box, Typography, Paper, Chip, IconButton, LinearProgress, TextField, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { getCommandHistory } from '../services/api';
 import AutomationIcon from '@mui/icons-material/AutoFixHigh';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import TimerIcon from '@mui/icons-material/Timer';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+
+interface KnowledgeItemModel {
+  id: string;
+  content: string;
+}
 
 const CommandCard = styled(Paper)(({ theme }) => ({
   background: '#313244',
@@ -59,13 +65,118 @@ const automationPatterns = [
 ];
 
 const CommandHistory: React.FC = () => {
+  const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [selectedPattern, setSelectedPattern] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<KnowledgeItemModel[]>([]);
+
+  useEffect(() => {
+    const fetchCommandHistory = async () => {
+      try {
+        const history = await getCommandHistory();
+        setCommandHistory(history);
+      } catch (error) {
+        console.error('Error fetching command history:', error);
+      }
+    };
+
+    fetchCommandHistory();
+  }, []);
+
+  const handleSearch = async () => {
+    try {
+      const response = await fetch('/api/command_history/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: searchQuery }),
+      });
+      const data = await response.json();
+      setSearchResults(data.results);
+    } catch (error) {
+      console.error('Error searching command history:', error);
+    }
+  };
+
+  const handleReplayCommand = async (itemId: string) => {
+    try {
+      const response = await fetch('/api/command_history/execute', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ itemId: itemId }),
+      });
+      const data = await response.json();
+      console.log('Command execution result:', data);
+      // Handle the result (e.g., display a message)
+    } catch (error) {
+      console.error('Error re-executing command:', error);
+      // Handle the error (e.g., display an error message)
+    }
+  };
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h4" sx={{ color: '#CDD6F4', mb: 4, fontWeight: 600 }}>
+      <Typography variant="h4" sx={{ color: '#CDD6F4', mb: 2, fontWeight: 600 }}>
         Command History
       </Typography>
+
+      {/* Search Bar */}
+      <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
+        <TextField
+          label="Search Commands"
+          variant="outlined"
+          fullWidth
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          sx={{ background: '#313244', borderRadius: '8px', input: { color: '#CDD6F4' } }}
+        />
+        <Button variant="contained" color="primary" onClick={handleSearch}>
+          Search
+        </Button>
+      </Box>
+
+      {/* Search Results */}
+      <Box>
+        {searchResults.map((result: KnowledgeItemModel) => (
+          <Paper key={result.id} sx={{ p: 2, mb: 1, background: '#313244', borderRadius: '8px' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography sx={{ color: '#CDD6F4', fontWeight: 500 }}>
+                {result.content}
+              </Typography>
+              <IconButton
+                size="small"
+                sx={{
+                  color: '#A6E3A1',
+                  backgroundColor: 'rgba(166, 227, 161, 0.1)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(166, 227, 161, 0.2)',
+                  },
+                }}
+                onClick={() => handleReplayCommand(result.id)}
+              >
+                <PlayArrowIcon />
+              </IconButton>
+            </Box>
+          </Paper>
+        ))}
+      </Box>
+
+      {/* Command History List */}
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h6" sx={{ color: '#CDD6F4', mb: 2, fontWeight: 600 }}>
+          Recent Commands
+        </Typography>
+        <Paper sx={{ p: 2, background: '#313244', borderRadius: '8px' }}>
+          {commandHistory.map((command, index) => (
+            <Typography key={index} sx={{ color: '#CDD6F4', mb: 1 }}>
+              {command}
+            </Typography>
+          ))}
+        </Paper>
+      </Box>
 
       <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
         {/* Command Analytics */}
@@ -212,4 +323,4 @@ const CommandHistory: React.FC = () => {
   );
 };
 
-export default CommandHistory; 
+export default CommandHistory;

@@ -1,5 +1,8 @@
 # Test Planning
 
+## Sprint 1 Status
+All Sprint 1 test targets (unit, integration, E2E for theme, layout, API, state management) are now in place and coverage is being tracked. Sprint 2 will focus on extending tests to knowledge graph, backend integration, and CRUD operations.
+
 ## Test Strategy by Phase
 
 ### Phase 1: Foundation & Core UI

@@ -39,4 +39,21 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 # - Database sessions
 # - Redis connections
 # - Vector store connections
-# - Ollama client 
+# - Ollama client
+# - Command History Service
+from .services.CommandHistoryService import CommandHistoryService
+from .services.CommandExecutionService import CommandExecutionService
+from .services.CommandTemplateService import CommandTemplateService
+from .services.CommandSchedulerService import CommandSchedulerService
+
+def get_command_history_service() -> CommandHistoryService:
+    return CommandHistoryService()
+
+def get_command_execution_service() -> CommandExecutionService:
+    return CommandExecutionService()
+
+def get_command_template_service() -> CommandTemplateService:
+    return CommandTemplateService()
+
+def get_command_scheduler_service() -> CommandSchedulerService:
+    return CommandSchedulerService()

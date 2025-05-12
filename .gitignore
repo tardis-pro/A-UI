@@ -74,3 +74,6 @@ jspm_packages/
 Thumbs.db 
 # Local Netlify folder
 .netlify
+**.pyc
+kg/docs/
+kg/*
